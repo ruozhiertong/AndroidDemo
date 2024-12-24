@@ -1,0 +1,11 @@
+*.out
+*.o
+*.a
+*.obj
+*.exe
+.DS_Store
+# 所有build目录
+build/
+release/
+debug/
+.idea/

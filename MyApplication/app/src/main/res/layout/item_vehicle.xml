@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- ImageView for vehicle image -->
+        <ImageView
+            android:id="@+id/iv_vehicle"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:contentDescription="@string/vehicle_image"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_car_placeholder" />
+
+        <!-- TextView for plate number -->
+        <TextView
+            android:id="@+id/tv_plate_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintEnd_toStartOf="@id/tv_status"
+            app:layout_constraintStart_toEndOf="@id/iv_vehicle"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="ABC-1234" />
+
+        <!-- TextView for status -->
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Available"
+            tools:textColor="@color/status_available" />
+
+        <!-- TextView for brand and model -->
+        <TextView
+            android:id="@+id/tv_brand_model"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_vehicle"
+            app:layout_constraintTop_toBottomOf="@id/tv_plate_number"
+            tools:text="Toyota Camry" />
+
+        <!-- TextView for vehicle type -->
+        <TextView
+            android:id="@+id/tv_vehicle_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="?android:textColorSecondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_vehicle"
+            app:layout_constraintTop_toBottomOf="@id/tv_brand_model"
+            tools:text="Sedan" />
+
+        <!-- TextView for year -->
+        <TextView
+            android:id="@+id/tv_year_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/year_label"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?android:textColorSecondary"
+            app:layout_constraintStart_toEndOf="@id/iv_vehicle"
+            app:layout_constraintTop_toBottomOf="@id/tv_vehicle_type" />
+
+        <TextView
+            android:id="@+id/tv_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_year_label"
+            app:layout_constraintStart_toEndOf="@id/tv_year_label"
+            tools:text="2020" />
+
+        <!-- TextView for mileage -->
+        <TextView
+            android:id="@+id/tv_mileage_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/mileage_label"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?android:textColorSecondary"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_year_label"
+            app:layout_constraintStart_toEndOf="@id/tv_year" />
+
+        <TextView
+            android:id="@+id/tv_mileage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_mileage_label"
+            app:layout_constraintStart_toEndOf="@id/tv_mileage_label"
+            tools:text="50,000 km" />
+
+        <!-- TextView for daily rate -->
+        <TextView
+            android:id="@+id/tv_daily_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:textColor="?attr/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_vehicle"
+            tools:text="$50/day" />
+
+        <!-- MaterialButtons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_maintenance"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/maintenance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_daily_rate" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_daily_rate" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

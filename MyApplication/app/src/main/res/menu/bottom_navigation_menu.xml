@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_cars"
+        android:icon="@drawable/ic_car"
+        android:title="@string/nav_cars" />
+    <item
+        android:id="@+id/nav_customers"
+        android:icon="@drawable/ic_people"
+        android:title="@string/nav_customers" />
+
+    <item
+        android:id="@+id/nav_rental"
+        android:icon="@drawable/ic_rental"
+        android:title="@string/nav_rental" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_person"
+        android:title="@string/nav_profile" />
+</menu>

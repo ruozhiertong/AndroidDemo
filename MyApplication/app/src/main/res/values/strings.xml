@@ -1,0 +1,322 @@
+<resources>
+    <string name="app_name">MyRental</string>
+    <string name="error_username_required">Please enter your username</string>
+    <string name="error_password_required">Please enter your password</string>
+    <string name="error_account_inactive">Account error</string>
+    <string name="error_invalid_credentials">Invalid account</string>
+
+    <!-- Registration -->
+    <string name="register_title">Register a new user</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="hint_real_name">Real Name</string>
+    <string name="hint_phone">Phone Number</string>
+    <string name="hint_email">Email</string>
+    <string name="button_register">Register</string>
+    <string name="registration_success">Registration successful</string>
+    <string name="app_logo">App Logo</string>
+
+    <!-- Error Messages -->
+    <string name="error_username_exists">This username has already been registered</string>
+    <string name="error_registration_failed">Registration failed, please try again later</string>
+
+    <!-- Forgot Password -->
+    <string name="forgot_password_message">Input New Password</string>
+    <string name="button_reset_password">Reset</string>
+    <string name="password_reset_success">Password reset successfully</string>
+    <string name="password_reset_fail">Password reset failed</string>
+
+    <!-- Common -->
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="submit">Submit</string>
+    <string name="success">Success</string>
+    <string name="error">Error</string>
+
+    <!-- Login related -->
+    <string name="btn_login">Login</string>
+    <string name="username">Username</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_success">Login successful</string>
+    <string name="login_failed">Login failed</string>
+    <string name="invalid_credentials">Incorrect username or password</string>
+    <string name="account_disabled">Account has been disabled</string>
+    <string name="register_now">Don\'t have an account? Register now</string>
+
+    <!-- Registration related -->
+    <string name="register">Register</string>
+    <string name="register_success">Registration successful</string>
+    <string name="register_failed">Registration failed</string>
+    <string name="username_exists">Username already exists</string>
+    <string name="password_not_match">The passwords do not match</string>
+    <string name="go_to_login">Already have an account? Login now</string>
+
+    <!-- Forgot Password related -->
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="verify_code">Verification Code</string>
+    <string name="send_verify_code">Send Verification Code</string>
+    <string name="reset_success">Password reset successful</string>
+    <string name="reset_failed">Password reset failed</string>
+    <string name="verify_code_sent">Verification code sent</string>
+    <string name="verify_code_invalid">Invalid verification code</string>
+
+    <!-- Error Prompts -->
+    <string name="error_empty_username">Please enter your username</string>
+    <string name="error_empty_user">User does not exist</string>
+    <string name="error_empty_password">Please enter your password</string>
+    <string name="error_empty_email">Please enter your email</string>
+    <string name="error_empty_phone">Please enter your phone number</string>
+    <string name="error_empty_real_name">Please enter your real name</string>
+    <string name="error_empty_verify_code">Please enter the verification code</string>
+    <string name="error_password_length">Password must be between 6-20 characters</string>
+    <string name="error_network">Network connection failed, please check your network settings</string>
+
+    <string name="welcome_message">Welcome</string>
+
+    <string name="nav_cars">Vehicle Management</string>
+    <string name="nav_customers">Customer Management</string>
+    <string name="nav_rental">Rental Management</string>
+    <string name="nav_profile">Profile</string>
+
+    <string name="add_car">Add Vehicle</string>
+
+    <!-- Vehicle Management -->
+    <string name="add_vehicle">Add Vehicle</string>
+    <string name="edit_vehicle">Edit Vehicle</string>
+    <string name="vehicle_details">Vehicle Details</string>
+    <string name="delete_vehicle">Delete Vehicle</string>
+    <string name="delete_vehicle_confirmation">Are you sure you want to delete this vehicle? This action cannot be undone.</string>
+    <string name="vehicle_deleted">Vehicle deleted</string>
+    <string name="error_deleting_vehicle">Error deleting vehicle</string>
+    <string name="vehicle_saved">Vehicle information saved</string>
+    <string name="error_saving_vehicle">Error saving vehicle information</string>
+    <string name="error_loading_vehicle">Error loading vehicle information</string>
+
+    <!-- Filter Options -->
+    <string-array name="filter_options">
+        <item>All Vehicles</item>
+        <item>Available Vehicles</item>
+        <item>Rented Out</item>
+        <item>In Maintenance</item>
+    </string-array>
+
+    <string-array name="rental_options">
+        <item>Active</item>
+        <item>Completed</item>
+        <item>Overdued</item>
+        <item>Cancelled</item>
+        <item>All status</item>
+    </string-array>
+
+    <!-- Vehicle Details Fields -->
+    <string name="plate_number">License Plate Number</string>
+    <string name="brand">Brand</string>
+    <string name="model">Model</string>
+    <string name="vehicle_type">Vehicle Type</string>
+    <string name="color">Color</string>
+    <string name="seats">Seats</string>
+    <string name="year">Year</string>
+    <string name="mileage">Mileage</string>
+    <string name="daily_rate">Daily Rate</string>
+    <string name="remarks">Remarks</string>
+
+    <!-- Formats -->
+    <string name="seats_format">%d seats</string>
+    <string name="mileage_format">%.1f km</string>
+
+    <!-- Actions -->
+    <string name="search">Search</string>
+    <string name="sort">Sort</string>
+    <string name="refresh">Refresh</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="complete_maintenance">Complete Maintenance</string>
+
+    <!-- Hints and Messages -->
+    <string name="required_field">This field is required</string>
+    <string name="plate_number_exists">This license plate number already exists</string>
+    <string name="vehicle_image">Vehicle Image</string>
+
+    <!-- Empty State -->
+    <string name="empty_vehicle_list">No vehicle information available.\nClick the button below to add a vehicle.</string>
+
+    <!-- Vehicle Management -->
+    <string name="vehicle_management">Vehicle Management</string>
+    <string name="add_new_vehicle">Add New Vehicle</string>
+    <string name="no_vehicles_found">No vehicles found</string>
+    <string name="search_hint">Search by plate number, brand, or model</string>
+
+    <!-- Vehicle Status -->
+    <string name="status_available">Available</string>
+    <string name="status_rented">Rented</string>
+    <string name="status_maintenance">Maintenance</string>
+    <string name="status_unavailable">Unavailable</string>
+
+    <!-- Vehicle Details -->
+    <string name="year_label">Year:</string>
+    <string name="mileage_label">Mileage:</string>
+    <string name="daily_rate_format">$%.2f/day</string>
+
+    <!-- Actions -->
+    <string name="delete">Delete</string>
+    <string name="maintenance">Maintenance</string>
+    <string name="cancel">Cancel</string>
+    <string name="filter">Filter</string>
+    <string name="filter_vehicles">Filter Vehicles</string>
+    <string name="filter_rentals">Filter Rentals</string>
+    <string name="overdue">OverDue</string>
+    <string name="complete">Complete</string>
+
+
+
+    <!-- Sort Options -->
+    <string name="sort_by">Sort by</string>
+    <string name="sort_by_plate_number">Plate Number</string>
+    <string name="sort_by_brand">Brand</string>
+    <string name="sort_by_year">Newest First</string>
+    <string name="sort_by_daily_rate">Daily Rate</string>
+
+    <!-- Messages -->
+    <string name="vehicle_maintenance_status_updated">Vehicle status updated to maintenance</string>
+    <string name="error_updating_status">Error updating vehicle status</string>
+    <string name="rent_coming_soon">Rent feature coming soon</string>
+    <string name="undo">Undo</string>
+
+    <string name="profile_picture">Profile Picture</string>
+
+    <!-- Customer Management -->
+    <string name="customer_management">Customer Management</string>
+    <string name="add_customer">Add Customer</string>
+    <string name="edit_customer">Edit Customer</string>
+    <string name="search_customer_hint">Search by customer name, phone number, or ID number</string>
+    <string name="rental_history">Rental History</string>
+    <string name="add_to_blacklist">Add to Blacklist</string>
+    <string name="remove_from_blacklist">Remove from Blacklist</string>
+    <string name="status_normal">Normal</string>
+    <string name="status_blacklisted">Blacklisted</string>
+    <string name="rental_history_coming_soon">Rental history feature coming soon</string>
+    <string name="customer_added_to_blacklist">Customer added to blacklist</string>
+    <string name="customer_removed_from_blacklist">Customer removed from blacklist</string>
+    <string name="error_updating_customer">Error updating customer status</string>
+
+    <string name="no_customer_found">No customers found</string>
+
+    <!-- Profile -->
+    <string name="profile">Profile</string>
+    <string name="profile_info">Profile Information</string>
+    <string name="help_center">Help Center</string>
+    <string name="about">About</string>
+    <string name="logout">Logout</string>
+    <string name="forward">Forward</string>
+    <string name="help_message">If you need help, please contact the system administrator or refer to the user manual.</string>
+    <string name="about_message">Car Rental Management System v1.0\n© 2024 All Rights Reserved</string>
+    <string name="logout_confirmation">Are you sure you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+
+    <string name="delete_confirmation">Are you sure you want to delete?</string>
+    <string name="operate_confirmation">Are you sure you want to operate it?</string>
+
+
+
+    <!-- Settings Activity -->
+    <string name="settings">Settings</string>
+    <string name="profile_information">Profile Information</string>
+    <string name="real_name">Real Name</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+
+    <!-- Messages -->
+    <string name="profile_update_success">Profile updated successfully</string>
+    <string name="profile_update_failed">Failed to update profile</string>
+    <string name="password_change_success">Password changed successfully</string>
+    <string name="password_change_failed">Failed to change password</string>
+
+    <!-- Error Messages -->
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_invalid_phone">Invalid phone number</string>
+    <string name="error_incorrect_password">Incorrect password</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+    <string name="error_passwords_dont_match">Passwords do not match</string>
+
+    <string name="hint_user_type">User Type</string>
+    <string-array name="user_types">
+        <item>Admin</item>
+        <item>User</item>
+    </string-array>
+
+    <string name="hint_vehicle_status">Vehicle Status</string>
+    <string-array name="vehicle_status">
+        <item>Available for Rent</item>
+        <item>Rented Out</item>
+        <item>In Maintenance</item>
+    </string-array>
+
+    <string name="error_empty_name">Username is empty</string>
+    <string name="error_empty_id_number">ID number is empty</string>
+    <string name="error_id_number_exists">ID number already exists</string>
+    <string name="error_empty_license_number">Driver\'s license number is empty</string>
+    <string name="error_saving_customer">Failed to save</string>
+
+    <string name="customer_name">Customer Name</string>
+    <string name="id_number">ID Number</string>
+    <string name="customer_address">Customer Address</string>
+    <string name="license_number">Driver\'s License Number</string>
+
+    <!-- Rental Management -->
+    <string name="rental_management">Rental Management</string>
+    <string name="add_rental">Add New Rental</string>
+    <string name="edit_rental">Edit Rental</string>
+    <string name="no_rentals_found">No rentals found</string>
+    <string name="search_rental_hint">Search by customer name or vehicle</string>
+
+    <!-- Rental Status -->
+    <string name="status_active">Active</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="status_Overdued">Overdued</string>
+
+    <string name="status_unknown">Unknown</string>
+
+    <!-- Rental Details -->
+    <string name="select_customer">Select Customer</string>
+    <string name="select_vehicle">Select Vehicle</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="deposit">Deposit</string>
+    <string name="amount">Amount</string>
+    <string name="rental_period">Rental Period:</string>
+    <string name="suggested_deposit">Suggested deposit: %.2f</string>
+    <string name="suggested_amount">Suggested amount: %.2f</string>
+
+    <!-- Actions -->
+    <string name="complete_rental">Complete</string>
+    <string name="cancel_rental">Cancel</string>
+    <string name="overdue_rental">Overdue</string>
+
+
+    <!-- Messages -->
+    <string name="rental_saved">Rental information saved</string>
+    <string name="error_saving_rental">Error saving rental information</string>
+    <string name="rental_completed">Rental completed successfully</string>
+    <string name="error_completing_rental">Error completing rental</string>
+    <string name="rental_cancelled">Rental cancelled successfully</string>
+    <string name="rental_overdued">Rental overdued successfully</string>
+
+    <string name="error_cancelling_rental">Error cancelling rental</string>
+
+    <string name="delete_failed">Delete Failed</string>
+
+    <string name="upload_image">Select Image</string>
+
+</resources>
