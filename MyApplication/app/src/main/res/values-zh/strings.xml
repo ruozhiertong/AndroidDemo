@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">租车行</string>
+    <string name="error_username_required">请输入您的用户名</string>
+    <string name="error_password_required">请输入您的密码</string>
+    <string name="error_account_inactive">账户错误</string>
+    <string name="error_invalid_credentials">账户无效</string>
+
+    <!-- 注册 -->
+    <string name="register_title">注册新用户</string>
+    <string name="hint_username">用户名</string>
+    <string name="hint_password">密码</string>
+    <string name="hint_confirm_password">确认密码</string>
+    <string name="hint_real_name">真实姓名</string>
+    <string name="hint_phone">电话号码</string>
+    <string name="hint_email">电子邮件</string>
+    <string name="button_register">注册</string>
+    <string name="registration_success">注册成功</string>
+    <string name="app_logo">应用图标</string>
+
+    <!-- 错误消息 -->
+    <string name="error_username_exists">此用户名已被注册</string>
+    <string name="error_registration_failed">注册失败，请稍后再试</string>
+
+    <!-- 忘记密码 -->
+    <string name="forgot_password_message">输入新密码</string>
+    <string name="button_reset_password">重置</string>
+    <string name="password_reset_success">密码重置成功</string>
+    <string name="password_reset_fail">密码重置失败</string>
+
+    <!-- 通用 -->
+    <string name="password">密码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="submit">提交</string>
+    <string name="success">成功</string>
+    <string name="error">错误</string>
+
+    <!-- 登录相关 -->
+    <string name="btn_login">登录</string>
+    <string name="username">用户名</string>
+    <string name="remember_me">记住我</string>
+    <string name="forgot_password">忘记密码？</string>
+    <string name="login_success">登录成功</string>
+    <string name="login_failed">登录失败</string>
+    <string name="invalid_credentials">用户名或密码不正确</string>
+    <string name="account_disabled">账户已被禁用</string>
+    <string name="register_now">还没有账户？立即注册</string>
+
+    <!-- 注册相关 -->
+    <string name="register">注册</string>
+    <string name="register_success">注册成功</string>
+    <string name="register_failed">注册失败</string>
+    <string name="username_exists">用户名已存在</string>
+    <string name="password_not_match">密码不匹配</string>
+    <string name="go_to_login">已有账户？立即登录</string>
+
+    <!-- 忘记密码相关 -->
+    <string name="forgot_password_title">忘记密码</string>
+    <string name="reset_password">重置密码</string>
+    <string name="verify_code">验证码</string>
+    <string name="send_verify_code">发送验证码</string>
+    <string name="reset_success">密码重置成功</string>
+    <string name="reset_failed">密码重置失败</string>
+    <string name="verify_code_sent">验证码已发送</string>
+    <string name="verify_code_invalid">验证码无效</string>
+
+    <!-- 错误提示 -->
+    <string name="error_empty_username">请输入您的用户名</string>
+    <string name="error_empty_user">用户不存在</string>
+    <string name="error_empty_password">请输入您的密码</string>
+    <string name="error_empty_email">请输入您的电子邮件</string>
+    <string name="error_empty_phone">请输入您的电话号码</string>
+    <string name="error_empty_real_name">请输入您的真实姓名</string>
+    <string name="error_empty_verify_code">请输入验证码</string>
+    <string name="error_password_length">密码必须在6-20个字符之间</string>
+    <string name="error_network">网络连接失败，请检查您的网络设置</string>
+
+    <string name="welcome_message">欢迎</string>
+
+    <string name="nav_cars">车辆管理</string>
+    <string name="nav_customers">客户管理</string>
+    <string name="nav_rental">租赁管理</string>
+    <string name="nav_profile">个人资料</string>
+
+    <string name="add_car">添加车辆</string>
+
+    <!-- 车辆管理 -->
+    <string name="add_vehicle">添加车辆</string>
+    <string name="edit_vehicle">编辑车辆</string>
+    <string name="vehicle_details">车辆详情</string>
+    <string name="delete_vehicle">删除车辆</string>
+    <string name="delete_vehicle_confirmation">您确定要删除这辆车吗？此操作无法撤销。</string>
+    <string name="vehicle_deleted">车辆已删除</string>
+    <string name="error_deleting_vehicle">删除车辆出错</string>
+    <string name="vehicle_saved">车辆信息已保存</string>
+    <string name="error_saving_vehicle">保存车辆信息出错</string>
+    <string name="error_loading_vehicle">加载车辆信息出错</string>
+
+    <!-- 筛选选项 -->
+    <string-array name="filter_options">
+        <item>所有车辆</item>
+        <item>可用车辆</item>
+        <item>已出租</item>
+        <item>维修中</item>
+    </string-array>
+
+    <string-array name="rental_options">
+        <item>活跃</item>
+        <item>已完成</item>
+        <item>逾期</item>
+        <item>已取消</item>
+        <item>所有状态</item>
+    </string-array>
+
+    <!-- 车辆详情字段 -->
+    <string name="plate_number">车牌号码</string>
+    <string name="brand">品牌</string>
+    <string name="model">型号</string>
+    <string name="vehicle_type">车辆类型</string>
+    <string name="color">颜色</string>
+    <string name="seats">座位数</string>
+    <string name="year">年份</string>
+    <string name="mileage">里程</string>
+    <string name="daily_rate">日租金</string>
+    <string name="remarks">备注</string>
+
+    <!-- 格式 -->
+    <string name="seats_format">%d 座位</string>
+    <string name="mileage_format">%.1f 公里</string>
+
+    <!-- 操作 -->
+    <string name="search">搜索</string>
+    <string name="sort">排序</string>
+    <string name="refresh">刷新</string>
+    <string name="save">保存</string>
+    <string name="edit">编辑</string>
+    <string name="complete_maintenance">完成维修</string>
+
+    <!-- 提示和消息 -->
+    <string name="required_field">此字段为必填项</string>
+    <string name="plate_number_exists">此车牌号码已存在</string>
+    <string name="vehicle_image">车辆图片</string>
+
+    <!-- 空状态 -->
+    <string name="empty_vehicle_list">没有车辆信息。\n点击下面的按钮添加车辆。</string>
+
+    <!-- 车辆管理 -->
+    <string name="vehicle_management">车辆管理</string>
+    <string name="add_new_vehicle">添加新车</string>
+    <string name="no_vehicles_found">未找到车辆</string>
+    <string name="search_hint">按车牌号码、品牌或型号搜索</string>
+
+    <!-- 车辆状态 -->
+    <string name="status_available">可用</string>
+    <string name="status_rented">已租</string>
+    <string name="status_maintenance">维修中</string>
+    <string name="status_unavailable">不可用</string>
+
+    <!-- 车辆详情 -->
+    <string name="year_label">年份：</string>
+    <string name="mileage_label">里程：</string>
+    <string name="daily_rate_format">%.2f元/天</string>
+
+    <!-- 操作 -->
+    <string name="delete">删除</string>
+    <string name="maintenance">维修</string>
+    <string name="cancel">取消</string>
+    <string name="filter">筛选</string>
+    <string name="filter_vehicles">筛选车辆</string>
+    <string name="filter_rentals">筛选租赁</string>
+    <string name="overdue">逾期</string>
+    <string name="complete">完成</string>
+
+    <!-- 排序选项 -->
+    <string name="sort_by">排序方式</string>
+    <string name="sort_by_plate_number">车牌号码</string>
+    <string name="sort_by_brand">品牌</string>
+    <string name="sort_by_year">最新优先</string>
+    <string name="sort_by_daily_rate">日租金</string>
+
+    <!-- 消息 -->
+    <string name="vehicle_maintenance_status_updated">车辆状态已更新为维修</string>
+    <string name="error_updating_status">更新车辆状态出错</string>
+    <string name="rent_coming_soon">租赁功能即将推出</string>
+    <string name="undo">撤销</string>
+
+    <string name="profile_picture">头像</string>
+
+    <!-- 客户管理 -->
+    <string name="customer_management">客户管理</string>
+    <string name="add_customer">添加客户</string>
+    <string name="edit_customer">编辑客户</string>
+    <string name="search_customer_hint">按客户姓名、电话号码或身份证号码搜索</string>
+    <string name="rental_history">租赁历史</string>
+    <string name="add_to_blacklist">加入黑名单</string>
+    <string name="remove_from_blacklist">从黑名单移除</string>
+    <string name="status_normal">正常</string>
+    <string name="status_blacklisted">黑名单</string>
+    <string name="rental_history_coming_soon">租赁历史功能即将推出</string>
+    <string name="customer_added_to_blacklist">客户已加入黑名单</string>
+    <string name="customer_removed_from_blacklist">客户已从黑名单移除</string>
+    <string name="error_updating_customer">更新客户状态出错</string>
+
+    <string name="no_customer_found">未找到客户</string>
+
+    <!-- 个人资料 -->
+    <string name="profile">个人资料</string>
+    <string name="profile_info">个人资料信息</string>
+    <string name="help_center">帮助中心</string>
+    <string name="about">关于</string>
+    <string name="logout">退出登录</string>
+    <string name="forward">向前</string>
+    <string name="help_message">如需帮助，请联系系统管理员或参考用户手册。</string>
+    <string name="about_message">汽车租赁管理系统 v1.0\n© 2024 版权所有\n作者：lhz</string>
+    <string name="logout_confirmation">您确定要退出登录吗？</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="ok">确定</string>
+
+    <string name="delete_confirmation">您确定要删除吗？</string>
+    <string name="operate_confirmation">您确定要执行此操作吗？</string>
+
+    <!-- 设置 -->
+    <string name="settings">设置</string>
+    <string name="profile_information">个人资料信息</string>
+    <string name="real_name">真实姓名</string>
+    <string name="email">电子邮件</string>
+    <string name="phone">电话</string>
+    <string name="save_changes">保存更改</string>
+    <string name="change_password">更改密码</string>
+    <string name="current_password">当前密码</string>
+    <string name="new_password">新密码</string>
+    <string name="confirm_new_password">确认新密码</string>
+
+    <!-- 消息 -->
+    <string name="profile_update_success">个人资料更新成功</string>
+    <string name="profile_update_failed">个人资料更新失败</string>
+    <string name="password_change_success">密码更改成功</string>
+    <string name="password_change_failed">密码更改失败</string>
+
+    <!-- 错误消息 -->
+    <string name="error_field_required">此字段为必填项</string>
+    <string name="error_invalid_email">无效的电子邮件地址</string>
+    <string name="error_invalid_phone">无效的电话号码</string>
+    <string name="error_incorrect_password">密码不正确</string>
+    <string name="error_password_too_short">密码至少需要6个字符</string>
+    <string name="error_passwords_dont_match">密码不匹配</string>
+
+    <string name="hint_user_type">用户类型</string>
+    <string-array name="user_types">
+        <item>管理员</item>
+        <item>普通用户</item>
+    </string-array>
+
+    <string name="hint_vehicle_status">车辆状态</string>
+    <string-array name="vehicle_status">
+        <item>可供出租</item>
+        <item>已出租</item>
+        <item>维修中</item>
+    </string-array>
+
+    <string name="error_empty_name">用户名为空</string>
+    <string name="error_empty_id_number">身份证号码为空</string>
+    <string name="error_id_number_exists">身份证号码已存在</string>
+    <string name="error_empty_license_number">驾驶证号码为空</string>
+    <string name="error_saving_customer">保存失败</string>
+
+    <string name="customer_name">客户姓名</string>
+    <string name="id_number">身份证号码</string>
+    <string name="customer_address">客户地址</string>
+    <string name="license_number">驾驶证号码</string>
+
+    <!-- 租赁管理 -->
+    <string name="rental_management">租赁管理</string>
+    <string name="add_rental">添加新租赁</string>
+    <string name="edit_rental">编辑租赁</string>
+    <string name="no_rentals_found">未找到租赁信息</string>
+    <string name="search_rental_hint">按客户姓名或车辆搜索</string>
+
+    <!-- 租赁状态 -->
+    <string name="status_active">活跃</string>
+    <string name="status_completed">已完成</string>
+    <string name="status_cancelled">已取消</string>
+    <string name="status_Overdued">逾期</string>
+
+    <string name="status_unknown">未知</string>
+
+    <!-- 租赁详情 -->
+    <string name="select_customer">选择客户</string>
+    <string name="select_vehicle">选择车辆</string>
+    <string name="start_date">开始日期</string>
+    <string name="end_date">结束日期</string>
+    <string name="deposit">押金</string>
+    <string name="amount">金额</string>
+    <string name="rental_period">租赁期限：</string>
+    <string name="suggested_deposit">建议押金：%.2f</string>
+    <string name="suggested_amount">建议金额：%.2f</string>
+
+    <!-- 操作 -->
+    <string name="complete_rental">完成</string>
+    <string name="cancel_rental">取消</string>
+    <string name="overdue_rental">逾期</string>
+
+    <!-- 消息 -->
+    <string name="rental_saved">租赁信息已保存</string>
+    <string name="error_saving_rental">保存租赁信息出错</string>
+    <string name="rental_completed">租赁成功完成</string>
+    <string name="error_completing_rental">完成租赁出错</string>
+    <string name="rental_cancelled">租赁成功取消</string>
+    <string name="rental_overdued">租赁已逾期</string>
+    <string name="error_cancelling_rental">取消租赁出错</string>
+
+    <string name="delete_failed">删除失败</string>
+
+    <string name="upload_image">选择图片</string>
+</resources>
