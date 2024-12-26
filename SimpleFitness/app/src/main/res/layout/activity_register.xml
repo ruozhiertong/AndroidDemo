@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F0F4F8">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="用户注册"
+        android:textSize="24sp"
+        android:textColor="#333333"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"/>
+
+    <EditText
+        android:id="@+id/edit_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="请输入昵称"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/edit_account"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="请输入账号"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/edit_confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="确认密码"
+        android:inputType="textPassword"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="注册"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/text_login_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="已有账号？立即登录"
+        android:textColor="#4A90E2"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:padding="10dp"/>
+</LinearLayout>
