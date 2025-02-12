@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,6 +16,8 @@ import android.widget.TimePicker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.simplefitness.R;
+
+import component.MyCalendarView;
 import database.DatabaseHelper;
 import model.Workout;
 
@@ -23,6 +26,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class AddWorkoutActivity extends AppCompatActivity {
+    private MyCalendarView myCalendarView;
     private Spinner spinnerType;
     private TextView tvSelectedTime;
     private EditText etDuration;
@@ -33,6 +37,7 @@ public class AddWorkoutActivity extends AppCompatActivity {
     private List<String> difficultyTypes;
 
     private String selectedTime;
+
 
 //    private boolean editMode;
 
@@ -56,11 +61,15 @@ public class AddWorkoutActivity extends AppCompatActivity {
 //            }
         }
 
-        dbHelper = new DatabaseHelper(this);
+//        dbHelper = new DatabaseHelper(this);
+        dbHelper = DatabaseHelper.getInstance(this);
         initView();
     }
 
     private void initView() {
+
+        myCalendarView = findViewById(R.id.calendarView);
+
         workoutTypes = new ArrayList<>();
         workoutTypes.add("跑步");
         workoutTypes.add("搏击");
@@ -91,6 +100,11 @@ public class AddWorkoutActivity extends AppCompatActivity {
         btnSelectTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Set the selected day to the current day of the month
+                myCalendarView.setSelectedDay(myCalendarView.calendar.get(Calendar.DAY_OF_MONTH));
+
+
                 final Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);

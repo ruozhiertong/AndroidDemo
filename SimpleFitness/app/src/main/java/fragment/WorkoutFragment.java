@@ -31,7 +31,9 @@ public class WorkoutFragment extends Fragment {
         System.out.println("onCreateView...");
         View view = inflater.inflate(R.layout.fragment_workout, container, false);
 
-        dbHelper = new DatabaseHelper(getContext());
+//        dbHelper = new DatabaseHelper(getContext());
+        dbHelper = DatabaseHelper.getInstance(this.getContext());
+
         workoutItems = dbHelper.getAllWorkoutItems();
 
         recyclerView = view.findViewById(R.id.recycler_view);

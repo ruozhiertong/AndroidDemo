@@ -14,6 +14,158 @@ import model.User;
 import model.Workout;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+//    资源管理：减少资源消耗，避免多次打开数据库连接。
+//    线程安全：避免多个实例之间的并发问题，确保数据一致性。
+//    易于管理：简化数据库操作的管理，便于维护和调试。
+    // 使用单例模式。 在整个应用生命周期之间，只要一个单例，即只要有一个数据库连接， 这样减少资源消耗，避免多次打开数据库连接.
+    private static DatabaseHelper instance;
+
+    //关于，何时关闭数据库连接。关键看是否频繁操作数据库。
+    //每次操作后关闭，比较适合不那么频繁操作数据库的，如果过于频繁，每次操作都关闭会导致性能低下。
+    /**
+     * 在使用SQLite数据库时，合理管理数据库连接的打开和关闭非常重要，以避免资源泄漏和性能问题。关闭数据库连接的时机取决于你的应用架构和使用场景。以下是一些常见的策略和建议：
+     * 1. 每次操作后关闭连接
+     * 在每次数据库操作完成后关闭连接是一种常见的做法。这种方式可以确保每次操作后都释放资源，避免长时间占用数据库连接。
+     * 示例代码
+     * java复制
+     * public class MainActivity extends AppCompatActivity {
+     *     private DatabaseHelper dbHelper;
+     *
+     *     @Override
+     *     protected void onCreate(Bundle savedInstanceState) {
+     *         super.onCreate(savedInstanceState);
+     *         setContentView(R.layout.activity_main);
+     *
+     *         // 获取数据库实例
+     *         dbHelper = DatabaseHelper.getInstance(this);
+     *
+     *         // 使用数据库
+     *         SQLiteDatabase db = dbHelper.getWritableDatabase();
+     *         try {
+     *             // 执行数据库操作
+     *             db.execSQL("INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com')");
+     *         } finally {
+     *             // 关闭数据库连接
+     *             db.close();
+     *         }
+     *     }
+     * }
+     * 2. 使用try-with-resources语句
+     * 从Java 7开始，try-with-resources语句可以自动关闭实现了AutoCloseable接口的资源。SQLiteDatabase实现了AutoCloseable接口，因此可以使用try-with-resources语句来自动管理数据库连接。
+     * 示例代码
+     * java复制
+     * public class MainActivity extends AppCompatActivity {
+     *     private DatabaseHelper dbHelper;
+     *
+     *     @Override
+     *     protected void onCreate(Bundle savedInstanceState) {
+     *         super.onCreate(savedInstanceState);
+     *         setContentView(R.layout.activity_main);
+     *
+     *         // 获取数据库实例
+     *         dbHelper = DatabaseHelper.getInstance(this);
+     *
+     *         // 使用数据库
+     *         try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+     *             // 执行数据库操作
+     *             db.execSQL("INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com')");
+     *         } catch (Exception e) {
+     *             e.printStackTrace();
+     *         }
+     *     }
+     * }
+     * 3. 在Activity或Fragment的生命周期中管理连接
+     * 如果你在Activity或Fragment中频繁使用数据库，可以在onCreate或onResume方法中打开数据库连接，并在onDestroy或onPause方法中关闭连接。
+     * 示例代码
+     * java复制
+     * public class MainActivity extends AppCompatActivity {
+     *     private DatabaseHelper dbHelper;
+     *     private SQLiteDatabase db;
+     *
+     *     @Override
+     *     protected void onCreate(Bundle savedInstanceState) {
+     *         super.onCreate(savedInstanceState);
+     *         setContentView(R.layout.activity_main);
+     *
+     *         // 获取数据库实例
+     *         dbHelper = DatabaseHelper.getInstance(this);
+     *
+     *         // 打开数据库连接
+     *         db = dbHelper.getWritableDatabase();
+     *     }
+     *
+     *     @Override
+     *     protected void onDestroy() {
+     *         super.onDestroy();
+     *         // 关闭数据库连接
+     *         if (db != null && db.isOpen()) {
+     *             db.close();
+     *         }
+     *     }
+     *
+     *     private void performDatabaseOperation() {
+     *         try {
+     *             // 执行数据库操作
+     *             db.execSQL("INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com')");
+     *         } catch (Exception e) {
+     *             e.printStackTrace();
+     *         }
+     *     }
+     * }
+     * 4. 在Application类中管理全局数据库实例
+     * 如果你的应用中有多个组件需要频繁访问数据库，可以在Application类中管理全局数据库实例，并在应用退出时关闭连接。
+     * 示例代码
+     * MyApplication.java
+     * java复制
+     * public class MyApplication extends Application {
+     *     private static DatabaseHelper dbHelper;
+     *
+     *     @Override
+     *     public void onCreate() {
+     *         super.onCreate();
+     *         dbHelper = DatabaseHelper.getInstance(this);
+     *     }
+     *
+     *     public static DatabaseHelper getDbHelper() {
+     *         return dbHelper;
+     *     }
+     *
+     *     @Override
+     *     public void onTerminate() {
+     *         super.onTerminate();
+     *         if (dbHelper != null) {
+     *             dbHelper.close();
+     *         }
+     *     }
+     * }
+     * MainActivity.java
+     * java复制
+     * public class MainActivity extends AppCompatActivity {
+     *     @Override
+     *     protected void onCreate(Bundle savedInstanceState) {
+     *         super.onCreate(savedInstanceState);
+     *         setContentView(R.layout.activity_main);
+     *
+     *         // 获取数据库实例
+     *         SQLiteDatabase db = MyApplication.getDbHelper().getWritableDatabase();
+     *
+     *         try {
+     *             // 执行数据库操作
+     *             db.execSQL("INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com')");
+     *         } finally {
+     *             // 关闭数据库连接
+     *             db.close();
+     *         }
+     *     }
+     * }
+     * 注意事项
+     * 资源释放：确保在每次操作后或在组件销毁时释放数据库资源，避免内存泄漏。
+     * 线程安全：在多线程环境中，确保数据库操作是线程安全的。
+     * 性能优化：避免频繁打开和关闭数据库连接，尤其是在短时间内多次操作数据库时。
+     * 通过合理管理数据库连接的打开和关闭，可以确保应用的性能和稳定性，同时避免资源泄漏。
+     */
+
     private static final String DATABASE_NAME = "FitnessApp.db";
     private static final int DATABASE_VERSION = 2;
 
@@ -38,9 +190,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public DatabaseHelper(Context context) {
+//    public DatabaseHelper(Context context) {
+//        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+//    }
+
+    // 私有化构造函数。 确保外部不会创建多个实例。
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
+
+    /**
+     * 确保线程安全。进行同步处理 synchronized。
+     * @param context
+     * @return
+     */
+    public static synchronized DatabaseHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {

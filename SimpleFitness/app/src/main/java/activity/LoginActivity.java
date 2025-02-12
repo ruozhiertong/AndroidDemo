@@ -26,7 +26,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        dbHelper = new DatabaseHelper(this);
+//        dbHelper = new DatabaseHelper(this);
+        dbHelper = DatabaseHelper.getInstance(this);
         preferences = getSharedPreferences("user_data", MODE_PRIVATE);
         initView();
     }

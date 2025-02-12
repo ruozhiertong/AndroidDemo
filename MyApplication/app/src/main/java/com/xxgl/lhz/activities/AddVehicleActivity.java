@@ -58,8 +58,8 @@ public class AddVehicleActivity extends AppCompatActivity {
     private MaterialButton btnSave;
     private MaterialButton btnDelete;
     // 请求码常量
+    //    private static final int PERMISSIONS_REQUEST_CODE = 2; //权限相关
     private static final int REQUEST_CODE_PICK_IMAGE = 1; // 可以是任何唯一的整数
-    private static final int PERMISSIONS_REQUEST_CODE = 2;
     private static final int REQUEST_MEDIA_PERMISSIONS = 3;
 
     private ImageView ivCarImage;
@@ -114,14 +114,15 @@ public class AddVehicleActivity extends AppCompatActivity {
     }
 
 
-    //动态权限请求。
-    private boolean ifNeedRequestPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
-            return true;
-        }
-        return false;
-    }
+//    //动态权限请求。
+//    private boolean ifNeedRequestPermissions() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
+//            return true;
+//        }
+//        return false;
+//    }
+    
     private void btnImageClicked() {
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 //            // 没有权限，需要请求
@@ -194,26 +195,26 @@ public class AddVehicleActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 用户同意了权限请求，可以执行相关操作
-                pickImage();
-            } else {
-                // 用户拒绝了权限请求，可以给出提示或禁用相关功能
-                // 权限被拒绝，提示用户
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }else if (requestCode == REQUEST_MEDIA_PERMISSIONS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                loadExistingVehicle(vehicleId);
-            } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                // 用户同意了权限请求，可以执行相关操作
+//                pickImage();
+//            } else {
+//                // 用户拒绝了权限请求，可以给出提示或禁用相关功能
+//                // 权限被拒绝，提示用户
+//                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+//            }
+//        }else if (requestCode == REQUEST_MEDIA_PERMISSIONS) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                loadExistingVehicle(vehicleId);
+//            } else {
+//                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

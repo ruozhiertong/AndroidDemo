@@ -103,7 +103,8 @@ public class ProfileFragment extends Fragment {
         user.setGoal(goal);
 
         //保存到数据库。
-        new DatabaseHelper(this.getContext()).updateUser(user);
+//        new DatabaseHelper(this.getContext()).updateUser(user);
+        DatabaseHelper.getInstance(this.getContext()).updateUser(user);
 
 
         Toast.makeText(getContext(), "保存成功", Toast.LENGTH_SHORT).show();
