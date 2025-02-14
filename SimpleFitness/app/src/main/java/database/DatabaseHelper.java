@@ -199,6 +199,71 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * 在Android中，SQLiteOpenHelper 是一个辅助类，用于管理数据库的创建和版本管理。当你调用 SQLiteOpenHelper 的构造函数时，底层会发生一系列的操作来初始化数据库。以下是 DatabaseHelper 构造函数调用时底层发生的事情的详细分析：
+     * 构造函数的作用
+     * java复制
+     * public DatabaseHelper(Context context) {
+     *     super(context, DATABASE_NAME, null, DATABASE_VERSION);
+     * }
+     * context：上下文对象，用于访问应用的全局信息，如资源、文件路径等。
+     * DATABASE_NAME：数据库文件的名称。
+     * null：表示不使用自定义的CursorFactory，默认为null。
+     * DATABASE_VERSION：数据库的版本号，用于版本管理。
+     * 底层发生的事情
+     * 1. 数据库文件路径的确定
+     * SQLiteOpenHelper 会根据传入的 context 和 DATABASE_NAME 确定数据库文件的存储路径。数据库文件通常存储在应用的内部存储目录中，路径为：
+     * /data/data/<your-application-package-name>/databases/<DATABASE_NAME>
+     * 例如，如果你的应用包名是 com.example.myapp，数据库名称是 MyDatabase.db，那么数据库文件的路径将是：
+     * /data/data/com.example.myapp/databases/MyDatabase.db
+     * 2. 数据库版本管理
+     * DATABASE_VERSION 用于管理数据库的版本。当你调用 SQLiteOpenHelper 的构造函数时，它会检查数据库文件是否存在以及其版本号是否与传入的版本号一致。
+     * 如果数据库文件不存在：
+     * SQLiteOpenHelper 会创建一个新的数据库文件。
+     * 调用 onCreate(SQLiteDatabase db) 方法来初始化数据库结构。
+     * 如果数据库文件存在且版本号一致：
+     * 数据库文件将被直接使用，不会调用 onCreate 或 onUpgrade 方法。
+     * 如果数据库文件存在但版本号不一致：
+     * 调用 onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 方法来更新数据库结构。
+     * 你可以在这个方法中执行数据库的升级逻辑，如添加新表、修改表结构等。
+     * 3. 数据库连接池
+     * SQLiteOpenHelper 内部使用了一个数据库连接池来管理数据库连接。当你调用 getWritableDatabase() 或 getReadableDatabase() 方法时，SQLiteOpenHelper 会从连接池中获取一个可用的数据库连接。如果连接池中没有可用的连接，它会创建一个新的连接并将其加入连接池。
+     * 4. 线程安全
+     * SQLiteOpenHelper 是线程安全的，这意味着你可以从多个线程中调用 getWritableDatabase() 或 getReadableDatabase() 方法，而不会导致线程安全问题。
+     * 示例代码
+     * java复制
+     * public class DatabaseHelper extends SQLiteOpenHelper {
+     *     private static final String DATABASE_NAME = "MyDatabase.db";
+     *     private static final int DATABASE_VERSION = 1;
+     *
+     *     public DatabaseHelper(Context context) {
+     *         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+     *     }
+     *
+     *     @Override
+     *     public void onCreate(SQLiteDatabase db) {
+     *         // 创建数据库表
+     *         db.execSQL("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT)");
+     *     }
+     *
+     *     @Override
+     *     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+     *         // 升级数据库
+     *         db.execSQL("DROP TABLE IF EXISTS users");
+     *         onCreate(db);
+     *     }
+     * }
+     * 总结
+     * 当你调用 SQLiteOpenHelper 的构造函数时，底层会发生以下事情：
+     * 确定数据库文件的存储路径。
+     * 检查数据库文件是否存在以及其版本号是否与传入的版本号一致。
+     * 根据检查结果调用 onCreate 或 onUpgrade 方法。
+     * 使用数据库连接池管理数据库连接。
+     * 确保线程安全。
+     * 通过合理使用 SQLiteOpenHelper，你可以方便地管理数据库的创建、升级和连接。
+     *
+     */
+
 
     /**
      * 确保线程安全。进行同步处理 synchronized。

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="CoarseFineLocation">
+
+<!--如果app需要联网，需要打开这个权限-->
+    <uses-permission android:name="android.permission.INTERNET" />
+<!--如果要开通知notification，要打开这个权限-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+<!--  该项目需要 ACTIVITY_RECOGNITION 和  SYSTEM_ALERT_WINDOW 权限-->
+<!-- 传感器权限 以及 ACTIVITY_RECOGNITION API  -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+
+    <!--前台Service-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+<!-- 此权限允许应用在其他应用之上显示窗口（悬浮窗）。这通常用于需要在用户界面上覆盖其他应用的功能。 使用场景：在您的应用中，LockScreenActivity 可能需要在锁屏状态下显示，以便用户能够输入数学题的答案。此权限确保应用可以在锁屏界面上显示内容。   -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+<!--    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />-->
+
+    <!--    for test -->
+<!--    如果没在Manifest中声明权限，代码中动态申请会无效，回调处理函数中的permissions数组会为空。-->
+<!-- 读取联系人 -->
+<!--    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
+<!--    &lt;!&ndash; 读取日历&ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.READ_CALENDAR"/>-->
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>-->
+<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"-->
+<!--        tools:ignore="CoarseFineLocation" />-->
+<!--    <uses-permission android:name="android.permission.CAMERA" />-->
+
+    <!-- 添加 MIUI 特定权限 -->
+    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <uses-permission android:name="android.permission.MANAGE_ACTIVITY_TASKS" />
+
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+
+    <!-- 添加开机自启动权限 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
+
+    <uses-permission android:name="android.permission.CHANGE_COMPONENT_ENABLED_STATE" />
+
+
+
+<!--    alarm的权限。 同时也要动态申请。 -->
+<!--    setExactAndAllowWhileIdle-->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+<!--    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />-->
+<!--    <uses-permission android:name="android.permission.WAKE_LOCK" />-->
+
+
+    <!-- 声明自定义权限（可选） -->
+<!--    <permission-->
+<!--        android:name="com.example.safetywalk.PERMISSION_PRIVATE"-->
+<!--        android:protectionLevel="normal" />-->
+
+
+
+    <application
+        android:name="com.example.walklock.MyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SafetyWalk"
+        tools:targetApi="31">
+
+        <activity
+            android:name="com.example.walklock.ui.MainActivity"
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+<!--        不用activity-alias也行。 使用自己的activity来作为LAUNCHER入口。 -->
+        <!-- activity-alias 用于控制桌面图标 -->
+        <activity-alias
+            android:name="com.example.walklock.ui.MainActivityAlias"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity="com.example.walklock.ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <service
+            android:name="com.example.walklock.service.WalkDetectionService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:stopWithTask="false">
+        </service>
+<!--        process指定，会在新进程中启动-->
+
+<!--        <service android:name="com.example.walklock.service.GuardService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"-->
+<!--            android:foregroundServiceType="specialUse"-->
+<!--            android:process=":guard_service" />-->
+
+        <activity
+            android:name="com.example.walklock.ui.LockScreenActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SafetyWalk.LockScreen"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:taskAffinity=":lock"
+            android:enabled="true"
+            android:permission="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+<!--        没有用到，因为ActivityTransition API 不好用，直接用的传感器 -->
+        <receiver
+            android:name="com.example.walklock.receiver.ActivityTransitionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.walklock.ACTION_ACTIVITY_UPDATE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.example.walklock.receiver.LockScreenReceiver"
+            android:enabled="true"
+            android:exported="true">
+<!-- 8.0后 静态注册不起作用。只能用动态注册-->
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 注册开机广播接收器 -->
+        <receiver
+            android:name="com.example.walklock.receiver.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.example.walklock.wakeup"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 添加 JobService 用于调度服务 -->
+<!--        <service-->
+<!--            android:name="com.example.walklock.service.WalkJobService"-->
+<!--            android:permission="android.permission.BIND_JOB_SERVICE"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"/>-->
+
+<!--        用于分享文件。分享到其他app -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
+
+<!--        注册小组件-->
+        <receiver
+            android:name="com.example.walklock.widget.MyWidgetProvider"
+            android:exported="true"
+            android:label="扫一扫">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.walklock.widget.update" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+    </application>
+
+</manifest>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SafetyWalk</string>
+    <string name="accessibility_service_description">用于在检测到走路时显示锁屏界面</string>
+</resources>
