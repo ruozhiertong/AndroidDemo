@@ -55,9 +55,8 @@ public class LockScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: Starting LockScreenActivity");
+        LogManager.d(TAG, "onCreate: Starting LockScreenActivity");
         super.onCreate(savedInstanceState);
-
         if (!Settings.canDrawOverlays(this)) {
             Toast.makeText(this, "需要悬浮窗权限", Toast.LENGTH_SHORT).show();
             return;
@@ -94,6 +93,7 @@ public class LockScreenActivity extends AppCompatActivity {
 
     private void recordLock(boolean lock) {
 
+        LogManager.d(TAG, "recordLock:" + lock);
         if (settings == null)
             settings = getSharedPreferences("lock_data", 0);
 
@@ -312,7 +312,7 @@ public class LockScreenActivity extends AppCompatActivity {
     private void setupAutoCloseTimer() {
         autoCloseHandler = new Handler(Looper.getMainLooper());
         autoCloseRunnable = () -> {
-            LogManager.d(TAG, "Auto closing LockScreenActivity after 10 minutes");
+            LogManager.d(TAG, "Auto closing LockScreenActivity after 10 minutes, it completed!");
             finishActivity();
         };
         // 启动计时器

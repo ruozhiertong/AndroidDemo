@@ -5,6 +5,8 @@ import android.app.Application;
 import android.util.Log;
 
 import android.content.res.Configuration;
+
+import com.example.walklock.util.CustomExceptionHandler;
 import com.example.walklock.util.LogManager;
 
 public class MyApplication extends Application {
@@ -13,6 +15,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
 
         Log.d(TAG, "onCreate: Application 初始化" + android.os.Process.myPid());
         // 初始化日志管理器

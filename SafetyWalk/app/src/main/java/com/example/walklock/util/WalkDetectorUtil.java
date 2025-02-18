@@ -5,7 +5,6 @@ import static android.content.Context.SENSOR_SERVICE;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -49,10 +48,8 @@ public class WalkDetectorUtil {
      * 传感器
      */
     private SensorManager sensorManager;
-
     private SensorEventListener countEventListener;
-
-
+    public boolean isRegistered = false;
 
     public void startStepDetector(Activity activity, SensorEventListener sensorEventListener) {
         sensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
@@ -76,6 +73,10 @@ public class WalkDetectorUtil {
     }
 
     public void startStepCount(Context ctx, SensorEventListener sensorEventListener) {
+        if (isRegistered) {
+            LogManager.d(TAG , "Sensor already registered");
+            return ;
+        }
 
         sensorManager = (SensorManager) ctx.getSystemService(SENSOR_SERVICE);
 
@@ -84,10 +85,15 @@ public class WalkDetectorUtil {
 
         if (countSensor != null) {
             Log.d(TAG, "startStepCount: registerListener");
-
             countEventListener = sensorEventListener;
-
-            sensorManager.registerListener(countEventListener, countSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            boolean registered = sensorManager.registerListener(countEventListener, countSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            if (registered) {
+                isRegistered = true;
+            } else {
+                LogManager.e(TAG, "registerListener failed");
+            }
+        } else {
+            LogManager.e(TAG, "countSensor is null");
         }
 
         /**
@@ -98,11 +104,17 @@ public class WalkDetectorUtil {
 
 
     public void stopStepCount() {
+        if (!isRegistered)
+            return;
         if (sensorManager != null) {
             Log.d(TAG, "stopStepCount: ");
             Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            if (sensor != null && countEventListener != null)
+            if (sensor != null && countEventListener != null) {
                 sensorManager.unregisterListener(countEventListener, sensor);
+                isRegistered = false;
+            } else {
+                LogManager.e(TAG, "stopStepCount failed");
+            }
         }
     }
 

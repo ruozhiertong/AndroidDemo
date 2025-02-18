@@ -35,9 +35,12 @@ import com.example.walklock.ui.LockScreenActivity;
 import com.example.walklock.util.LogManager;
 import com.example.walklock.util.WalkDetectorUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -83,7 +86,7 @@ import java.util.concurrent.ArrayBlockingQueue;
  *
  *                           所以，在强制停止应用下，无解。 不过，我们可以隐藏app图标，使得无法直接进入到应用信息页面进行强制停止操作。当然只是增加操作路径而已，根本上还是无法解决。
  *
- *                          Android系统（尤其是Android 3.1+）会将强制停止的应用标记为“停止状态”（stopped state），这类应用无法接收任何广播（包括BOOT_COMPLETED）。 直到用户手动启动应用或通过其他组件显式激活。
+ *                          Android系统（尤其是Android 3.1+）会将强制停止的应用标记为"停止状态"（stopped state），这类应用无法接收任何广播（包括BOOT_COMPLETED）。 直到用户手动启动应用或通过其他组件显式激活。
  *
  *     4.不给相关的权限。 无解。
  *
@@ -105,6 +108,8 @@ public class WalkDetectionService extends Service {
     public static final String ACTION_START_SENSOR = "com.example.walklock.START_SENSOR";
 
 
+
+
     private boolean isNormalStop = false; // 标记是否是正常停止
 //    private static final int WALKING_THRESHOLD = 3000; // 3秒，用于测试。实际使用时改为30000(30秒)
 //    private static final int STATIONARY_THRESHOLD = 1200000; // 20分钟
@@ -112,9 +117,9 @@ public class WalkDetectionService extends Service {
 //    private ActivityRecognitionClient activityRecognitionClient;
 
     private WalkDetectorUtil walkDetector;
+    private LockScreenReceiver lockScreenReceiver;
 
     private Queue<Long> stepTimestamps; // 用于存储步数事件的时间戳
-
     private boolean isMoving = false; // 是否在动。 但不代表一定在走路或跑路。
 
     //减少非走路状态的误判。
@@ -137,8 +142,6 @@ public class WalkDetectionService extends Service {
 
     private boolean isLocked;
 
-
-
     // 添加白名单应用包名
     private static final Set<String> WHITE_LIST_PACKAGES = new HashSet<>(Arrays.asList(
             "com.autonavi.minimap",        // 高德地图
@@ -146,12 +149,6 @@ public class WalkDetectionService extends Service {
             "com.tencent.map",             // 腾讯地图
             "com.google.android.apps.maps"  // Google Maps
     ));
-
-    private ActivityManager activityManager;
-
-
-
-    private LockScreenReceiver lockScreenReceiver;
 
 
     public class LocalBinder extends Binder {
@@ -161,15 +158,36 @@ public class WalkDetectionService extends Service {
     }
 
 
+    public void init() {
+
+        //动态注册广播接收器。
+        lockScreenReceiver = new LockScreenReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        registerReceiver(lockScreenReceiver, filter);
+        walkDetector = new WalkDetectorUtil();
+    }
+
+    public void cleanup () {
+        if (lockScreenReceiver != null)
+            unregisterReceiver(lockScreenReceiver);
+        // 清理资源
+        if (walkDetector != null) {
+            walkDetector.stopStepCount();
+            walkDetector = null;
+        }
+    }
+
+
 
     private void startDetector(){
-
-        if (walkDetector != null)
-            return;
-
-
         LogManager.d(TAG, "startDetector: ");
-        walkDetector = new WalkDetectorUtil();
+        if (walkDetector.isRegistered)
+            return;
+        LogManager.d(TAG, "register new walkDetector");
+
         stepTimestamps = new ArrayBlockingQueue<>(100);
 
 //        walkDetector.startStepDetector(this, new SensorEventListener() {
@@ -197,12 +215,13 @@ public class WalkDetectionService extends Service {
 
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
+                String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(new Date());
+                LogManager.d(TAG, "Sensor data received at: " + time);
                 changeCount++;
                 int tempStep = (int) sensorEvent.values[0];
                 Log.d(TAG, "onSensorChanged: changeCount " + changeCount);
                 Log.d(TAG, "onSensorChanged: " + sensorEvent.values[0]);
                 Log.d(TAG, "onSensorChanged: " + sensorEvent.accuracy);
-
 
 //                SystemUtil.isScreenOn(getApplicationContext());
 
@@ -226,34 +245,18 @@ public class WalkDetectionService extends Service {
     }
     @Override
     public void onCreate() {
-        Log.d(TAG, "onCreate: ");
+        LogManager.d(TAG, "onCreate");
         Log.d(TAG, "onCreate: Process ID: " + android.os.Process.myPid());
         Log.d(TAG, "onCreate: Stack trace: " + Log.getStackTraceString(new Exception()));
-
         super.onCreate();
-        activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-
-        lockScreenReceiver = new LockScreenReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
-        registerReceiver(lockScreenReceiver, filter);
-
-
-
-        SharedPreferences settings = getSharedPreferences("lock_data", 0);
-
-        isLocked = settings.getBoolean("is_lock", false);
-
-        if (isLocked)
-            startLockScreenActivity();
+        init();
     }
 
 
     private boolean isWhiteListAppInForeground() {
-        if (activityManager == null) return false;
-
+//        ActivityManager activityManager;
+//        activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//        if (activityManager == null) return false;
 //        List<ActivityManager.RunningAppProcessInfo> processes = activityManager.getRunningAppProcesses();
 //        if (processes == null) return false;
 //
@@ -345,13 +348,13 @@ public class WalkDetectionService extends Service {
 
     private void startLockScreenActivity() {
         Log.d(TAG, "startLockScreenActivity: attempting to start lock screen");
+        LogManager.d(TAG, "startLockScreenActivity...");
+
         // 原来的备选启动方式代码
         if (!Settings.canDrawOverlays(this)) {
             Log.e(TAG, "No overlay permission");
             return;
         }
-
-        LogManager.d(TAG, "startLockScreenActivity...");
 
         // 创建启动 LockScreenActivity 的 Intent
         Intent lockIntent = new Intent(getApplicationContext(), LockScreenActivity.class);
@@ -380,13 +383,13 @@ public class WalkDetectionService extends Service {
             //手动触发。 一般都是和Alarmanager等结合使用，由他们去调用其send方法，不用自己手动调用。
             pendingIntent.send();
         } catch (PendingIntent.CanceledException e) {
-            Log.e(TAG, "Failed to start LockScreenActivity with PendingIntent", e);
+            LogManager.e(TAG, "Failed to start LockScreenActivity with PendingIntent", e);
             try {
                 // 如果 PendingIntent 失败，尝试直接启动
                 lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(lockIntent);
             } catch (Exception e2) {
-                Log.e(TAG, "Failed to start LockScreenActivity directly", e2);
+                LogManager.e(TAG, "Failed to start LockScreenActivity directly", e2);
                 // 如果直接启动也失败，尝试使用广播
 //                Intent broadcastIntent = new Intent("com.example.walklock.START_LOCK_SCREEN");
 //                broadcastIntent.setPackage(getPackageName());
@@ -404,7 +407,12 @@ public class WalkDetectionService extends Service {
     @SuppressLint("ForegroundServiceType")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand: " + intent);
+        LogManager.d(TAG, "onStartCommand: " + intent);
+        //变成前台服务。
+        createNotificationChannel();
+        startForegroundWithNotification();
+
+
         if (intent != null && ACTION_STOP_SERVICE.equals(intent.getAction())) {
             isNormalStop = true;
             stopSelf();
@@ -412,7 +420,7 @@ public class WalkDetectionService extends Service {
         }
 
         if (intent != null && ACTION_STOP_SENSOR.equals(intent.getAction())) {
-//            LogManager.d(TAG, "ACTION_STOP_SENSOR " + "try: " + niceTry + "isMoving " +  isMoving);
+            LogManager.d(TAG, "ACTION_STOP_SENSOR " + "isMoving " +  isMoving);
 //            if (isMoving)
 //                niceTry++;
             //锁屏时候不检测。
@@ -441,27 +449,26 @@ public class WalkDetectionService extends Service {
 //                }
 //            }
 
-            if (walkDetector != null) {
-                LogManager.d(TAG, "stop sensor...");
-                walkDetector.stopStepCount();
-                walkDetector = null;
-            }
+            walkDetector.stopStepCount();
             return START_STICKY;
         }
 
         if (intent != null && ACTION_START_SENSOR.equals(intent.getAction())) {
+            LogManager.d(TAG, "ACTION_START_SENSOR");
             startDetector();
 //            preUnlockTime = System.currentTimeMillis();
             return START_STICKY;
         }
 
 
-
-        // 正常启动服务的逻辑
-        createNotificationChannel();
-        startForegroundWithNotification();
-        startDetector();
-
+        //正常command。
+        SharedPreferences settings = getSharedPreferences("lock_data", 0);
+        isLocked = settings.getBoolean("is_lock", false);
+        if (isLocked) {
+            startLockScreenActivity();
+        } else {
+            startDetector();
+        }
         return START_STICKY;
 
 //        在用户手动关闭(从最近任务列表移除)应用时，Service 即使设置了START_STICKY并不会重启。
@@ -482,6 +489,7 @@ public class WalkDetectionService extends Service {
         }
     }
 
+    @SuppressLint("ForegroundServiceType")
     private void startForegroundWithNotification() {
         // 创建打开主界面的 PendingIntent
         Intent mainIntent = new Intent(this, LockScreenActivity.class);
@@ -513,7 +521,7 @@ public class WalkDetectionService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind: ");
+        LogManager.d(TAG, "onBind: ");
         return binder;
     }
 
@@ -542,9 +550,11 @@ public class WalkDetectionService extends Service {
 //如果想在应用被移除时执行一些清理工作，应该放在 onTaskRemoved() 中，而不是 onDestroy() 中。因为只有 onTaskRemoved() 能保证被调用。
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Log.d(TAG, "onTaskRemoved: ");
+        LogManager.d(TAG, "onTaskRemoved: ");
         Log.d(TAG, "onTaskRemoved: Process ID: " + android.os.Process.myPid());
         super.onTaskRemoved(rootIntent);
+
+        cleanup();
 
         // 只有在非正常停止时才重启服务
         if (!isNormalStop) {
@@ -564,17 +574,10 @@ public class WalkDetectionService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy: ");
+        LogManager.d(TAG, "onDestroy: ");
         Log.d(TAG, "onDestroy: Process ID: " + android.os.Process.myPid());
         super.onDestroy();
-
-        unregisterReceiver(lockScreenReceiver);
-
-        // 清理资源
-        if (walkDetector != null) {
-            walkDetector.stopStepCount();
-            walkDetector = null;
-        }
+        cleanup();
 
         //一般能正常跑到onDestroy的，基本都是normal stop。 所以这里的处理没有必要。
         // 非正常停止时重启
