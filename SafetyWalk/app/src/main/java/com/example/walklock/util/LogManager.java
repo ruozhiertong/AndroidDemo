@@ -20,11 +20,19 @@ public class LogManager {
     private static File logFile;
     private static Context applicationContext;
 
+    //是否写入file
+    private static boolean ifWrite2file = false;
+    //设置写入的level.  e > w > i > d.  打印等级 >= level， 才打印输出。
+    private static int level = 1; // e 4, w 3, i 2, d 1,
+
+
     public static void init(Context context) {
         Log.d(TAG, "init: ");
         applicationContext = context.getApplicationContext();
+        level = 1;
+        ifWrite2file = false;
 
-        createNewLogFile();
+//        createNewLogFile();
 
 //        try {
 //            File logDir = new File(applicationContext.getExternalFilesDir(null), "logs");
@@ -52,7 +60,25 @@ public class LogManager {
 //        }
     }
 
+
+    public static void setLevel(int lev) {
+        level = lev;
+    }
+
+    public static void setIfWrite2file (boolean flag) {
+        ifWrite2file = flag;
+    }
+
+    public static boolean getIfWrite2file() {
+        return ifWrite2file;
+    }
+
+
     private static void createNewLogFile() {
+
+        if (!ifWrite2file)
+            return;
+
         if (applicationContext == null) return;
 
         try {
@@ -99,31 +125,45 @@ public class LogManager {
     }
 
     public static void d(String tag, String message) {
+        if (1 < level)
+            return;
         Log.d(tag, message);
         writeToFile("D", tag, message);
     }
 
     public static void i(String tag, String message) {
+        if (2 < level)
+            return;
         Log.i(tag, message);
         writeToFile("I", tag, message);
     }
 
     public static void w(String tag, String message) {
+        if (3 < level)
+            return;
         Log.w(tag, message);
         writeToFile("W", tag, message);
     }
 
     public static void e(String tag, String message) {
+        if (4 < level)
+            return;
         Log.e(tag, message);
         writeToFile("E", tag, message);
     }
 
     public static void e(String tag, String message, Throwable tr) {
+        if (4 < level)
+            return;
         Log.e(tag, message, tr);
         writeToFile("E", tag, message + "\n" + Log.getStackTraceString(tr));
     }
 
     private static synchronized void writeToFile(String level, String tag, String message) {
+
+        if (!ifWrite2file)
+            return;
+
         if (logFile == null || !logFile.exists()) {
             Log.d(TAG, "writeToFile: logFile == null || !logFile.exists()");
             createNewLogFile();

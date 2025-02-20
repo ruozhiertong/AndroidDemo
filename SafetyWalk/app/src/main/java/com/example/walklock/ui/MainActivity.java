@@ -63,6 +63,9 @@ import com.example.walklock.util.LogManager;
  *     - 增加了日志保存和查看。
  *     - 增加了移除桌面图标的功能。（减少通过应用图标进入应用信息页进行强制停止， 以及 进行卸载）
  *     - 增加了小组件的功能（在删除桌面图标后可以进入应用）。
+ *     - todo： 增加配置应用白名单功能。在白名单的应用在使用过程，不会进行运动检测。
+ *     - todo:  增加，在锁屏屏幕下，可以打开某些应用的功能。
+ *     - todo:  做成配置形式，可调整检测的阈值。
  *
  * 技术点：
  *      全局锁住屏幕的实现。禁止其他操作。
@@ -79,8 +82,12 @@ import com.example.walklock.util.LogManager;
  *              熄屏状态应该不检测，避免在熄屏时进入锁住界面。导致需要开屏使用手机时无法使用。
  *              两种方式：1.简单方式，不设置锁屏显示(这样在熄屏下不会进入锁住界面。但是可能会有问题，在开屏的时候可能过一会就进入锁住界面)
  *                      2.监听屏幕的亮和熄。 亮的时候开始检测，熄的时候停止服务。
- *      自启动。 （service杀死后可以自启动。开机时也可以自启动）
- *      省电策略。设置后台无限制。（避免限制传感器停止检测）（如果传感器有变动，一般会10s检测一次）
+ *      自启动。 （service杀死后可以自启动。开机时也可以自启动）。 主要是Service 重启时会受到限制。
+ *              自启动影响Service重启。 START_STICK, onTaskRemoved 等。
+ *      省电策略。设置后台无限制。（避免限制传感器停止检测）（如果传感器有变动，一般会10s检测一次）。
+ *          主要是传感器会收到限制，会导致传感器不是即时，而是堆积到打开应用后一下子调用。
+ *          也会对定时器有一些影响，导致无法按时发出。 省电策略影响的是传感器，定时器alarm等，不会影响广播接收器等。
+ *          所以，省电策略改成无限制，不要智能限制。
  *
  *      闹钟权限。
  *      应用使用情况权限。
@@ -127,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Button btnTestAlarm;
+
+
+    private Switch stwLog;
 
 
 //    private Intent serviceIntent;
@@ -426,6 +436,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        stwLog = findViewById(R.id.logSwitch);
+
+        stwLog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                LogManager.setIfWrite2file(b);
+                SharedPreferences.Editor editor = getSharedPreferences("app_settings", Context.MODE_PRIVATE).edit();
+                editor.putBoolean("write_file", b);
+                editor.apply();
+            }
+        });
+
         // 初始化日志按钮
         btnViewlog = findViewById(R.id.btnViewLogs);
         btnViewlog.setOnClickListener(v -> showLogDialog());
@@ -496,6 +518,11 @@ public class MainActivity extends AppCompatActivity {
             boolean isServiceRunning = SystemUtil.isServiceRunning(this, WalkDetectionService.class);
             Log.d(TAG, "onResume: isServiceRunning " + isServiceRunning);
             serviceSwitch.setChecked(isServiceRunning);
+        }
+
+
+        if (stwLog != null) {
+            stwLog.setChecked(LogManager.getIfWrite2file());
         }
     }
     

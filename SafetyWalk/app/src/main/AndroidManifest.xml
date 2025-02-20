@@ -98,6 +98,15 @@
             </intent-filter>
         </activity-alias>
 
+        <activity android:name="com.example.walklock.ui.HiddenActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.INFO" />
+            </intent-filter>
+        </activity>
+
+
         <service
             android:name="com.example.walklock.service.WalkDetectionService"
             android:enabled="true"

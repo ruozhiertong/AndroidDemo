@@ -184,7 +184,7 @@ public class WalkDetectionService extends Service {
 
     private void startDetector(){
         LogManager.d(TAG, "startDetector: ");
-        if (walkDetector.isRegistered)
+        if (walkDetector != null && walkDetector.isRegistered)
             return;
         LogManager.d(TAG, "register new walkDetector");
 
@@ -247,7 +247,7 @@ public class WalkDetectionService extends Service {
     public void onCreate() {
         LogManager.d(TAG, "onCreate");
         Log.d(TAG, "onCreate: Process ID: " + android.os.Process.myPid());
-        Log.d(TAG, "onCreate: Stack trace: " + Log.getStackTraceString(new Exception()));
+//        Log.d(TAG, "onCreate: Stack trace: " + Log.getStackTraceString(new Exception()));
         super.onCreate();
         init();
     }
@@ -332,7 +332,7 @@ public class WalkDetectionService extends Service {
 
         LogManager.d(TAG, "step size " + stepTimestamps.size());
 
-        if (stepTimestamps.size() >= STEP_THRESHOLD / 4) {
+        if (stepTimestamps.size() >= STEP_THRESHOLD / 3) {
             isMoving = true;
             LogManager.d(TAG, "step size over 1/3 and isMoving true" );
         }
@@ -408,6 +408,7 @@ public class WalkDetectionService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogManager.d(TAG, "onStartCommand: " + intent);
+
         //变成前台服务。
         createNotificationChannel();
         startForegroundWithNotification();
@@ -462,7 +463,7 @@ public class WalkDetectionService extends Service {
 
 
         //正常command。
-        SharedPreferences settings = getSharedPreferences("lock_data", 0);
+        SharedPreferences settings = getSharedPreferences("app_settings", 0);
         isLocked = settings.getBoolean("is_lock", false);
         if (isLocked) {
             startLockScreenActivity();
@@ -471,9 +472,28 @@ public class WalkDetectionService extends Service {
         }
         return START_STICKY;
 
-//        在用户手动关闭(从最近任务列表移除)应用时，Service 即使设置了START_STICKY并不会重启。
-//        即使设置了 START_STICKY，Service 也不会自动重启，因为这是用户的明确关闭操作。
 //        START_STICKY 只在系统因内存不足等原因杀死 Service 时才起作用。
+//        设置了`START_STICKY`的Service会在以下情况下被系统重启：
+//
+//        1. 系统资源不足时被系统杀死后
+//        2. 用户从最近任务列表中移除应用后
+//        3. 应用进程被强制终止（如通过系统设置中的"强制停止"功能）
+//        4. 系统崩溃或重启后
+//        5. 应用崩溃导致Service被终止后
+//        6. OEM厂商的系统优化或电池管理功能杀死进程后
+//
+//        值得注意的是，`START_STICKY`重启时的行为特点：
+//        - 系统会创建新的Service实例并调用`onCreate()`
+//        - 然后调用`onStartCommand()`，但Intent通常为null
+//                - 重启不会立即发生，而是取决于系统资源状况和调度策略
+//                - 在某些高度定制的Android系统上，厂商可能限制了Service的自动重启行为
+//
+//`START_STICKY`不会在以下情况重启Service：
+//        - 通过`stopSelf()`或`stopService()`正常停止Service
+//                - 在`onTaskRemoved()`中调用`stopSelf()`主动停止Service
+//                - 设备处于低电量模式且未被列为电池优化白名单
+//
+//        如果你需要更可靠的服务重启机制，可以考虑使用`JobScheduler`、`WorkManager`或前台Service来提高服务的存活率。
     }
 
     private void createNotificationChannel() {
@@ -554,12 +574,15 @@ public class WalkDetectionService extends Service {
         Log.d(TAG, "onTaskRemoved: Process ID: " + android.os.Process.myPid());
         super.onTaskRemoved(rootIntent);
 
-        cleanup();
+        // 当用户从最近任务列表中移除应用， 会onCreate -> onTaskRemoved, 因此在onTaskRemoved这里不做cleanup. 如果做cleanup，又StartService，会导致onStartCommand中walkDetector空指针。
+
+        // cleanup();
 
         // 只有在非正常停止时才重启服务
         if (!isNormalStop) {
-            Log.d(TAG, "onTaskRemoved: restarting...");
-            Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+            LogManager.d(TAG, "onTaskRemoved: restarting...");
+            Intent restartServiceIntent = new Intent(getApplicationContext(), WalkDetectionService.class);
+            restartServiceIntent.setAction("just_test_no_sense");
             restartServiceIntent.setPackage(getPackageName());
             PendingIntent restartServicePendingIntent = PendingIntent.getService(
                     getApplicationContext(), 1, restartServiceIntent,
@@ -569,6 +592,10 @@ public class WalkDetectionService extends Service {
             alarmService.set(AlarmManager.ELAPSED_REALTIME,
                     SystemClock.elapsedRealtime() + 1000,
                     restartServicePendingIntent);
+        } else {
+            //如果正常停止，也不会调用onTaskRemoved.
+            //所以，这里也不会执行到。
+            cleanup();
         }
     }
 

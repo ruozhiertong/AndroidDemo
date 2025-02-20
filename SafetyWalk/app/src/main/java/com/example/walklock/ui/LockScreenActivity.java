@@ -95,7 +95,7 @@ public class LockScreenActivity extends AppCompatActivity {
 
         LogManager.d(TAG, "recordLock:" + lock);
         if (settings == null)
-            settings = getSharedPreferences("lock_data", 0);
+            settings = getSharedPreferences("app_settings", 0);
 
         // 记录锁屏
         SharedPreferences.Editor editor = settings.edit();

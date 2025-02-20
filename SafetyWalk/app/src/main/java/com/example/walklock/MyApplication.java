@@ -2,6 +2,8 @@ package com.example.walklock;
 
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import android.content.res.Configuration;
@@ -21,6 +23,12 @@ public class MyApplication extends Application {
         Log.d(TAG, "onCreate: Application 初始化" + android.os.Process.myPid());
         // 初始化日志管理器
         LogManager.init(this);
+        //设置日志打印级别。
+//        LogManager.setLevel(1);
+
+        SharedPreferences settings = getSharedPreferences("app_settings", Context.MODE_PRIVATE);
+        boolean ifWrite2file = settings.getBoolean("write_file", false);
+        LogManager.setIfWrite2file(ifWrite2file);
 
         // 初始化全局资源（如数据库、分析工具等）
         initThirdPartyLibs();
