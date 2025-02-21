@@ -17,13 +17,28 @@ public class LockScreenReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        Log.d(TAG, "onReceive: " + intent);
+
+        //有一定几率的bug。 当Service销毁时，刚好又接收到广播，广播接收器中又StartService，导致bug。
+        // 获取服务实例，检查是否正在销毁
+        WalkDetectionService service = WalkDetectionService.getInstance();
+        if (service == null || service.isDestroying()) {
+            Log.d(TAG, "Service is null or is being destroyed, ignoring broadcast");
+            return;
+        }
+
         String action = intent.getAction();
+        if (action == null)
+            return;
+
         if (Intent.ACTION_SCREEN_OFF.equals(action)) {
             // 设备锁屏。
             // 锁屏时如果关闭service，那么解锁时由于service取消，无法接收到解锁广播。
             // 因此这里最好不要完全关闭service，而是让service关闭传感器检测。
             Log.d(TAG, "onReceive: ACTION_SCREEN_OFF" );
-            boolean isServiceRunning = SystemUtil.isServiceRunning(context , WalkDetectionService.class);
+            // 前面的if (service == null || service.isDestroying())，保证运行此处时service是存在的。
+//            boolean isServiceRunning = SystemUtil.isServiceRunning(context , WalkDetectionService.class);
+            boolean isServiceRunning = true;
             if (isServiceRunning) {
                 // 发送停止服务的 Intent
                 Intent stopSensorIntent = new Intent(context, WalkDetectionService.class);

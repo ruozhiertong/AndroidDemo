@@ -246,10 +246,13 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 
-    public void startService() {
+    public void startWalkDetectService() {
 
-        if (SystemUtil.isServiceRunning(this, WalkDetectionService.class))
+        WalkDetectionService walkDetectionService = WalkDetectionService.getInstance();
+        if (walkDetectionService == null || walkDetectionService.isDestroying())
             return;
+//        if (SystemUtil.isServiceRunning(this, WalkDetectionService.class))
+//            return;
 
         // 启动服务
         Intent serviceIntent = new Intent(this, WalkDetectionService.class);
@@ -271,9 +274,10 @@ public class MainActivity extends AppCompatActivity {
 //        finish();
     }
 
-    public void stopService() {
+    public void stopWalkDetectService() {
         //如果服务没有启动，关闭时会异常。
-        boolean isServiceRunning = SystemUtil.isServiceRunning(this, WalkDetectionService.class);
+//        boolean isServiceRunning = SystemUtil.isServiceRunning(this, WalkDetectionService.class);
+        boolean isServiceRunning = isWalkDetectionServiceRunning();
         if (!isServiceRunning)
             return;
 
@@ -428,9 +432,9 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 Log.d(TAG, "onCheckedChanged: " + checked);
                 if (checked) {
-                    startService();
+                    startWalkDetectService();
                 } else {
-                    stopService();
+                    stopWalkDetectService();
                 }
             }
         });
@@ -505,7 +509,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    private boolean isWalkDetectionServiceRunning (){
+        boolean isServiceRunning = false;
+        WalkDetectionService service = WalkDetectionService.getInstance();
+        if (service == null || service.isDestroying())
+            isServiceRunning = false;
+        else
+            isServiceRunning = true;
+        return isServiceRunning;
+    }
 
 
     @Override
@@ -515,7 +527,8 @@ public class MainActivity extends AppCompatActivity {
         // 检查服务是否正在运行并设置开关状态
         // 每次回到前台时检查服务状态
         if (serviceSwitch != null) {
-            boolean isServiceRunning = SystemUtil.isServiceRunning(this, WalkDetectionService.class);
+            //            boolean isServiceRunning = SystemUtil.isServiceRunning(this, WalkDetectionService.class);
+            boolean isServiceRunning = isWalkDetectionServiceRunning();
             Log.d(TAG, "onResume: isServiceRunning " + isServiceRunning);
             serviceSwitch.setChecked(isServiceRunning);
         }

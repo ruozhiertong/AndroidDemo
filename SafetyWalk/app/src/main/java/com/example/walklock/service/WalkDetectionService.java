@@ -142,6 +142,12 @@ public class WalkDetectionService extends Service {
 
     private boolean isLocked;
 
+
+    private volatile boolean isDestroying = false; // 添加标志位表示服务正在销毁
+
+    private static volatile WalkDetectionService instance;
+
+
     // 添加白名单应用包名
     private static final Set<String> WHITE_LIST_PACKAGES = new HashSet<>(Arrays.asList(
             "com.autonavi.minimap",        // 高德地图
@@ -163,17 +169,28 @@ public class WalkDetectionService extends Service {
         //动态注册广播接收器。
         lockScreenReceiver = new LockScreenReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
+        filter.addAction(Intent.ACTION_SCREEN_OFF); // 屏幕关闭 / 锁屏。
+//        filter.addAction(Intent.ACTION_SCREEN_ON); // 亮屏，不一定解锁。
+        filter.addAction(Intent.ACTION_USER_PRESENT); // 解锁，并且进入主屏幕。 ACTION_USER_PRESENT 仅解锁，不一定进入主屏幕。
         registerReceiver(lockScreenReceiver, filter);
         walkDetector = new WalkDetectorUtil();
     }
 
     public void cleanup () {
-        if (lockScreenReceiver != null)
-            unregisterReceiver(lockScreenReceiver);
+
+
         // 清理资源
+
+        if (lockScreenReceiver != null) {
+            try {
+                unregisterReceiver(lockScreenReceiver);
+            } catch (IllegalArgumentException e) {
+                // 接收器可能已经被注销
+                LogManager.e(TAG, "Receiver already unregistered", e);
+            }
+            lockScreenReceiver = null;
+        }
+
         if (walkDetector != null) {
             walkDetector.stopStepCount();
             walkDetector = null;
@@ -245,10 +262,11 @@ public class WalkDetectionService extends Service {
     }
     @Override
     public void onCreate() {
-        LogManager.d(TAG, "onCreate");
+        LogManager.d(TAG, "onCreate:" + this);
         Log.d(TAG, "onCreate: Process ID: " + android.os.Process.myPid());
 //        Log.d(TAG, "onCreate: Stack trace: " + Log.getStackTraceString(new Exception()));
         super.onCreate();
+        instance = this;
         init();
     }
 
@@ -407,7 +425,13 @@ public class WalkDetectionService extends Service {
     @SuppressLint("ForegroundServiceType")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogManager.d(TAG, "onStartCommand: " + intent);
+        LogManager.d(TAG, "onStartCommand, intent: " + intent + "flags : " + flags + "startId: " + startId);
+
+        // 如果服务正在销毁，拒绝新的启动请求
+        if (isDestroying) {
+            LogManager.d(TAG, "Service is being destroyed, ignoring start command");
+            return START_NOT_STICKY;
+        }
 
         //变成前台服务。
         createNotificationChannel();
@@ -467,10 +491,11 @@ public class WalkDetectionService extends Service {
         isLocked = settings.getBoolean("is_lock", false);
         if (isLocked) {
             startLockScreenActivity();
+            return START_NOT_STICKY;
         } else {
             startDetector();
+            return START_STICKY;
         }
-        return START_STICKY;
 
 //        START_STICKY 只在系统因内存不足等原因杀死 Service 时才起作用。
 //        设置了`START_STICKY`的Service会在以下情况下被系统重启：
@@ -495,6 +520,8 @@ public class WalkDetectionService extends Service {
 //
 //        如果你需要更可靠的服务重启机制，可以考虑使用`JobScheduler`、`WorkManager`或前台Service来提高服务的存活率。
     }
+
+
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -570,7 +597,7 @@ public class WalkDetectionService extends Service {
 //如果想在应用被移除时执行一些清理工作，应该放在 onTaskRemoved() 中，而不是 onDestroy() 中。因为只有 onTaskRemoved() 能保证被调用。
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        LogManager.d(TAG, "onTaskRemoved: ");
+        LogManager.d(TAG, "onTaskRemoved: " + this);
         Log.d(TAG, "onTaskRemoved: Process ID: " + android.os.Process.myPid());
         super.onTaskRemoved(rootIntent);
 
@@ -601,9 +628,13 @@ public class WalkDetectionService extends Service {
 
     @Override
     public void onDestroy() {
-        LogManager.d(TAG, "onDestroy: ");
-        Log.d(TAG, "onDestroy: Process ID: " + android.os.Process.myPid());
+        LogManager.d(TAG, "onDestroy: " + this);
+        LogManager.d(TAG, "onDestroy: Process ID: " + android.os.Process.myPid());
         super.onDestroy();
+
+        isDestroying = true;
+        instance = null;
+
         cleanup();
 
         //一般能正常跑到onDestroy的，基本都是normal stop。 所以这里的处理没有必要。
@@ -623,5 +654,14 @@ public class WalkDetectionService extends Service {
 //        }
 
 
+    }
+
+
+    public static WalkDetectionService getInstance() {
+        return instance;
+    }
+
+    public boolean isDestroying() {
+        return isDestroying;
     }
 }
