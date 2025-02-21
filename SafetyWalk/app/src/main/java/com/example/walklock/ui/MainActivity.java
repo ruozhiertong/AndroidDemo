@@ -247,9 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startWalkDetectService() {
-
-        WalkDetectionService walkDetectionService = WalkDetectionService.getInstance();
-        if (walkDetectionService == null || walkDetectionService.isDestroying())
+        if (isWalkDetectionServiceRunning())
             return;
 //        if (SystemUtil.isServiceRunning(this, WalkDetectionService.class))
 //            return;
