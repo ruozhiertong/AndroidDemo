@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    tools:context=".ThemeSettingsActivity">
+
+    <!-- Header with Back Button -->
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_back"
+            app:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:text="主题设置"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@id/header_layout" />
+
+    <!-- Theme Options -->
+    <RadioGroup
+        android:id="@+id/theme_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/divider">
+
+        <!-- Default Blue Theme -->
+        <RadioButton
+            android:id="@+id/theme_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:checked="true"
+            android:padding="8dp"
+            android:text="蓝色主题 (默认)"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:buttonTint="?attr/colorPrimary" />
+
+        <!-- Dark Mode Theme -->
+        <RadioButton
+            android:id="@+id/theme_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:padding="8dp"
+            android:text="深色主题"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:buttonTint="?attr/colorPrimary" />
+
+        <!-- Green Theme -->
+        <RadioButton
+            android:id="@+id/theme_green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:padding="8dp"
+            android:text="绿色主题"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:buttonTint="?attr/colorPrimary" />
+
+        <!-- Purple Theme -->
+        <RadioButton
+            android:id="@+id/theme_purple"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:padding="8dp"
+            android:text="紫色主题"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:buttonTint="?attr/colorPrimary" />
+    </RadioGroup>
+
+    <!-- Theme Preview -->
+    <TextView
+        android:id="@+id/preview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:text="预览"
+        android:textColor="?attr/colorOnBackground"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/theme_radio_group" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/preview_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/preview_title">
+
+        <LinearLayout
+            android:id="@+id/preview_lnout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="?android:attr/colorBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/preview_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_shield_check"
+                    app:tint="?attr/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/tv_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="设置预览"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/preview_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:checked="true"
+                android:text="示例开关"/>
+<!--                android:trackTint="?attr/colorPrimary"-->
+<!--                android:thumbTint="?attr/colorSecondary"/>-->
+
+            <SeekBar
+                android:id="@+id/preview_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:progress="50"
+                android:progressTint="?attr/colorPrimary"
+                android:thumbTint="?attr/colorSecondary" />
+
+            <Button
+                android:id="@+id/preview_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="示例按钮"
+                />
+<!--            不用设置了，在themes.xml中有默认的    android:textColor="?attr/colorOnPrimary"-->
+<!--                android:backgroundTint="?attr/colorPrimary" />-->
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Apply Button -->
+    <Button
+        android:id="@+id/apply_theme_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:padding="16dp"
+        android:text="应用主题"
+        android:textColor="?attr/colorOnPrimary"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
