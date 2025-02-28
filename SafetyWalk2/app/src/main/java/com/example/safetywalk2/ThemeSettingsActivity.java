@@ -3,6 +3,7 @@ package com.example.safetywalk2;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
@@ -20,7 +20,7 @@ import android.view.ContextThemeWrapper;
 import androidx.cardview.widget.CardView;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class ThemeSettingsActivity extends AppCompatActivity {
 
@@ -32,7 +32,8 @@ public class ThemeSettingsActivity extends AppCompatActivity {
     private LinearLayout lnPreview;
     private ImageView previewIcon;
     private TextView tvPreview;
-    private Switch swPreview;
+    private SwitchMaterial swPreview;
+//    private MaterialSwitch
     private SeekBar sbPreview;
     private Button btnPreviw;
 
@@ -160,22 +161,30 @@ public class ThemeSettingsActivity extends AppCompatActivity {
             btnPreviw.setTextColor(colorOnPrimary);
 
             // 为Switch创建状态颜色列表
-            int[][] switchStates = new int[][] {
-                new int[] {android.R.attr.state_checked},
-                new int[] {}
-            };
-            int[] switchTrackColors = new int[] {
-                colorPrimary,
-                colorSecondary
-            };
-            int[] switchThumbColors = new int[] {
-                colorPrimary,
-                colorSecondary
-            };
-            
+//            int[][] switchStates = new int[][] {
+//                new int[] {android.R.attr.state_checked},
+//                    new int[]{}
+//            };
+//            int[] switchTrackColors = new int[] {
+//                colorPrimary,
+//                    Color.GRAY
+//            };
+//            int[] switchThumbColors = new int[] {
+//                colorPrimary,
+//                    Color.GRAY
+//            };
+            // 获取Switch的颜色状态列表
+            ColorStateList trackTintList = getColorStateList(themedContext, R.color.switch_track_color);
+            ColorStateList thumbTintList = getColorStateList(themedContext, R.color.switch_thumb_color);
+
+            swPreview.setTrackTintList(trackTintList);
+            swPreview.setThumbTintList(thumbTintList);
+
             // 设置Switch的颜色
-            swPreview.setTrackTintList(new ColorStateList(switchStates, switchTrackColors));
-            swPreview.setThumbTintList(new ColorStateList(switchStates, switchThumbColors));
+//            ColorStateList swPreviewColors = ColorStateList.valueOf(colorPrimary);
+//            swPreview.setTrackTintList(swPreviewColors);
+//            swPreview.setThumbTintList(swPreviewColors);
+
             swPreview.setTextColor(textColorPrimary);
             //swPreview.setTrackTintList(ColorStateList.valueOf(trackTint));
             //swPreview.setThumbTintList(ColorStateList.valueOf(thumbTint));
@@ -197,6 +206,16 @@ public class ThemeSettingsActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    // 获取ColorStateList的辅助方法
+    private ColorStateList getColorStateList(Context context, int resId) {
+        try {
+            return context.getResources().getColorStateList(resId, context.getTheme());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

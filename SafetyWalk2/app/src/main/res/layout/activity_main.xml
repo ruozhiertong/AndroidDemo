@@ -132,7 +132,8 @@
                 android:textColor="?attr/colorPrimary"
                 android:textSize="16sp" />
 
-            <Switch
+<!--            <Switch-->
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/notification_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,7 +163,8 @@
                 android:textColor="?attr/colorPrimary"
                 android:textSize="16sp" />
 
-            <Switch
+<!--            <Switch-->
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/sound_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -192,7 +194,7 @@
                 android:textColor="?attr/colorPrimary"
                 android:textSize="16sp" />
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/vibration_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -233,22 +235,21 @@
     </LinearLayout>
 
     <!-- Help Button -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/help_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="@drawable/button_background_light"
         android:drawableStart="@drawable/ic_help"
         android:drawablePadding="8dp"
         android:paddingVertical="12dp"
         android:paddingStart="16dp"
         android:text="使用指南"
         android:textAlignment="textStart"
-        android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/settings_layout"
         app:layout_constraintVertical_bias="0.9" />
+    <!--        android:background="@drawable/button_background_light"。 android:backgroundTint 是一个用于设置背景颜色的属性，它会覆盖 android:background 中定义的颜色，但不会改变背景的形状或图片。-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

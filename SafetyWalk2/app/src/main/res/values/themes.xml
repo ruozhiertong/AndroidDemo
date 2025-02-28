@@ -11,6 +11,9 @@
         <item name="android:textColorHint">@color/text_hint_light</item>
 
         <!-- Button styles -->
+<!--        两种button，button和materialButton。-->
+<!--        这里并没有使用buttonstyle。 用的实际上是material风格，因此只有materialButtonStyle才其作用 -->
+<!--        <item name="buttonStyle">@style/Widget.MotionGuard.Button</item>-->
         <item name="materialButtonStyle">@style/Widget.MotionGuard.Button</item>
 
         <!-- Switch styles -->
@@ -20,12 +23,15 @@
     <!-- Blue Theme (Default) -->
     <style name="Theme.MotionGuard.Blue" parent="BaseTheme.MotionGuard">
         <!-- Primary brand colors -->
+<!--       name 指定属性名，可以是系统，也可以是自定义(attrs.xml定义的)。 如果属性名找不到就会报错，如下，没有fuck这个属性名 -->
+<!--        <item name="fuck">@color/blue_primary</item>-->
+
         <item name="colorPrimary">@color/blue_primary</item>
         <item name="colorPrimaryVariant">@color/blue_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
 
         <!-- Secondary brand colors -->
-        <item name="colorSecondary">@color/blue_primary</item>
+        <item name="colorSecondary">@color/blue_accent</item>
         <item name="colorSecondaryVariant">@color/blue_primary_dark</item>
         <item name="colorOnSecondary">@color/white</item>
 
@@ -107,8 +113,10 @@
 
     <!-- Switch style -->
     <style name="Widget.MotionGuard.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
-        <item name="thumbTint">?attr/colorPrimary</item>
-        <item name="trackTint">?attr/colorSecondary</item>
+<!--        <item name="thumbTint">?attr/colorPrimary</item>-->
+<!--        <item name="trackTint">?attr/colorSecondary</item>-->
+        <item name="thumbTint">@color/switch_thumb_color</item>
+        <item name="trackTint">@color/switch_track_color</item>
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 </resources>

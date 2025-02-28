@@ -159,7 +159,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/preview_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -196,10 +196,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="?attr/colorPrimary"
         android:padding="16dp"
         android:text="应用主题"
-        android:textColor="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
