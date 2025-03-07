@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <!-- App Header with Logo and Title -->
     <LinearLayout
@@ -68,14 +68,22 @@
         app:layout_constraintTop_toBottomOf="@id/status_circle" />
 
     <!-- Settings Section -->
+    <ScrollView
+        android:id="@+id/settings_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/status_text"
+        app:layout_constraintBottom_toTopOf="@id/help_button">
+
     <LinearLayout
         android:id="@+id/settings_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="32dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/status_text">
+        android:orientation="vertical">
 
         <!-- Sensitivity Setting -->
         <LinearLayout
@@ -104,7 +112,7 @@
                 android:id="@+id/sensitivity_seekbar"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:progress="65"
+                android:progress="100"
                 android:progressTint="?attr/colorPrimary"
                 android:thumbTint="?attr/colorPrimary" />
         </LinearLayout>
@@ -168,7 +176,7 @@
                 android:id="@+id/sound_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false" />
+                android:checked="true" />
         </LinearLayout>
 
         <!-- Vibration Setting -->
@@ -199,6 +207,71 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true" />
+        </LinearLayout>
+
+
+
+        <!-- Vibration Setting -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingVertical="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_shield_outline"
+                app:tint="?attr/colorPrimary" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:text="隐藏桌面图标"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/launch_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false" />
+        </LinearLayout>
+
+
+        <!--log setting -->
+        <LinearLayout
+            android:id="@+id/log_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingVertical="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_log"
+                app:tint="?attr/colorPrimary" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:text="日志设置"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/log_arrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="?attr/colorPrimary" />
         </LinearLayout>
 
         <!-- Theme Setting (NEW) -->
@@ -233,6 +306,8 @@
                 app:tint="?attr/colorPrimary" />
         </LinearLayout>
     </LinearLayout>
+    </ScrollView>
+
 
     <!-- Help Button -->
     <com.google.android.material.button.MaterialButton
@@ -246,9 +321,7 @@
         android:paddingStart="16dp"
         android:text="使用指南"
         android:textAlignment="textStart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/settings_layout"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintBottom_toBottomOf="parent" />
     <!--        android:background="@drawable/button_background_light"。 android:backgroundTint 是一个用于设置背景颜色的属性，它会覆盖 android:background 中定义的颜色，但不会改变背景的形状或图片。-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

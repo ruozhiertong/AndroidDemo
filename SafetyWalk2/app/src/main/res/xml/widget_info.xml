@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="50dp"
+    android:updatePeriodMillis="5000"
+    android:initialLayout="@layout/widget_layout"
+    android:resizeMode="horizontal"
+    android:widgetCategory="home_screen"
+    android:previewImage="@drawable/widget_preview" />
+<!--widget_preview 要放在drawable-nodpi目录下-->
+
+<!--小组件配置文件 -->
+
+<!--    预览不起作用是因为 Android 12 (API 31) 及以上版本需要使用 previewLayout，而低版本需要使用 previewImage。我们需要提供两种预览方式。-->

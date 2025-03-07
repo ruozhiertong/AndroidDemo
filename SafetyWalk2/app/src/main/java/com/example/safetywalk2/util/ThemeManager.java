@@ -1,13 +1,15 @@
-package com.example.safetywalk2;
+package com.example.safetywalk2.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.safetywalk2.R;
+
 public class ThemeManager {
-    private static final String PREF_NAME = "theme_pref";
-    private static final String KEY_THEME = "selected_theme";
+    private static final String PREF_NAME = Config.SHAREFILE_NAME;
+    private static final String KEY_THEME = Config.SELECTED_THEME;
 
     public static final int THEME_BLUE = 0;
     public static final int THEME_DARK = 1;

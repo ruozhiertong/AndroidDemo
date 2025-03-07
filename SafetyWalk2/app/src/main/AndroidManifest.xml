@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.safetywalk2">
+
+    <!--    以下权限只需静态声明  -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+<!--   只要静态申明。 但是一些系统还需要用户去专门的设置页面去设置才能起作用。 所以这里声明不声明都无所谓。 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
+
+    <!-- 以下权限除了Manifest中的静态声明，还要动态申请 -->
+    <!-- 运动健康权限（可以检测step传感器）。  设备动作与方向（加速度计、陀螺仪、磁力计、旋转矢量传感器）一般不需要申请权限，可以直接用   -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+<!--   需要 后台弹出界面权限和显示悬浮窗权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+<!--miui中，也要动态要求用户开启通知-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<!--    使用情况访问权限。 要文件声明+动态申请 -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
+        android:name="com.example.safetywalk2.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,19 +40,117 @@
         <!--        android:theme="@style/Theme.SafetyWalk2"-->
 
     <activity
-        android:name=".MainActivity"
-        android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        android:name=".ui.MainActivity"
+        android:exported="true"
+        android:launchMode="singleTask">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter> -->
     </activity>
 
+<!--   用alias来做launch。  -->
+    <activity-alias
+        android:name=".ui.MainActivityAlias"
+        android:enabled="true"
+        android:exported="true"
+        android:targetActivity=".ui.MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity-alias>
+
+<!--为解决小米手机在隐藏桌面图标后，会将省电策略改成智能 -->
+    <activity android:name="com.example.safetywalk2.ui.HiddenActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.INFO" />
+        </intent-filter>
+    </activity>
+
+
+
     <activity
-        android:name=".ThemeSettingsActivity"
+        android:name=".ui.ThemeSettingsActivity"
         android:exported="false" />
 
-    </application>
+    <activity
+        android:name=".ui.LogActivity"
+        android:exported="false" />
+
+
+    <activity
+        android:name=".ui.LockActivity"
+        android:exported="false"/>
+
+    <service
+        android:name=".service.WalkDetectionService"
+        android:enabled="true"
+        android:exported="false"
+        android:foregroundServiceType="specialUse"
+        android:stopWithTask="false">
+    </service>
+
+    <!-- 注册小组件. 小组件实际上也是receiver -->
+    <receiver
+        android:name=".widget.MyWidgetProvider"
+        android:exported="true"
+        android:label="MotionGuard">
+        <intent-filter>
+            <!--系统的-->
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            <!--处理用户的-->
+            <action android:name="com.example.safetywalk2.ACTION_SERVICE_STATE_CHANGED" />
+        </intent-filter>
+        <meta-data
+            android:name="android.appwidget.provider"
+            android:resource="@xml/widget_info" />
+    </receiver>
+
+
+
+    <!-- 注册开机广播接收器 -->
+    <receiver
+        android:name=".receiver.BootCompletedReceiver"
+        android:enabled="true"
+        android:exported="true">
+        <intent-filter>
+            <!-- 系统开机完成时的广播    -->
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            <action android:name="com.example.safety2.wakeup"/>
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </receiver>
+
+
+    <receiver
+        android:name=".receiver.LockScreenReceiver"
+        android:enabled="true"
+        android:exported="true">
+        <!-- 8.0后 静态注册不起作用。只能用动态注册-->
+        <intent-filter>
+            <action android:name="android.intent.action.SCREEN_OFF" />
+            <action android:name="android.intent.action.USER_PRESENT" />
+        </intent-filter>
+    </receiver>
+
+
+
+    <!--        用于分享文件。分享到其他app -->
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.fileprovider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+    </provider>
+
+</application>
 
 
 </manifest>

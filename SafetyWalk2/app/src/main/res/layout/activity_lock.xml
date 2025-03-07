@@ -1,53 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#CC000000">
 
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="8dp"
-        android:src="@drawable/ic_back"
-        android:tint="#3377FF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/back_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="返回"
-        android:textColor="#3377FF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/back_button"
-        app:layout_constraintStart_toEndOf="@id/back_button"
-        app:layout_constraintTop_toTopOf="@id/back_button" />
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
 
     <!-- Timer Circle -->
     <FrameLayout
         android:id="@+id/timer_circle"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="60dp"
-        android:background="@drawable/circle_background_blue"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/circle_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/math_problem"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_button">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_timer"
-            android:tint="#FFFFFF" />
+            android:background="@drawable/circle_background"
+            />
+<!--            app:tint="?attr/colorPrimary" />-->
     </FrameLayout>
 
     <!-- Math Problem -->
@@ -57,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="24 × 3 = ?"
-        android:textColor="#000000"
+        android:textColor="?attr/colorPrimary"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="请解答以下数学题"
-        android:textColor="#666666"
+        android:textColor="?attr/colorPrimary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +72,7 @@
         android:inputType="number"
         android:padding="16dp"
         android:textColorHint="#AAAAAA"
+        android:textColor = "?attr/colorPrimary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,10 +85,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/button_background_blue"
         android:paddingVertical="16dp"
         android:text="提交答案"
-        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,8 +101,10 @@
         android:text="答案错误，请重试"
         android:textColor="#FF3333"
         android:textSize="14sp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/submit_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

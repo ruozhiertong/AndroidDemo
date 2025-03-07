@@ -115,6 +115,8 @@
     <style name="Widget.MotionGuard.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
 <!--        <item name="thumbTint">?attr/colorPrimary</item>-->
 <!--        <item name="trackTint">?attr/colorSecondary</item>-->
+<!--        不能只是单独设置颜色，应该设置selecotr，因为switch有选中，没选中的状态-->
+        <!-- res/color/switch_color.xml。 selector以文件名调用 -->
         <item name="thumbTint">@color/switch_thumb_color</item>
         <item name="trackTint">@color/switch_track_color</item>
         <item name="android:textColor">?attr/colorPrimary</item>

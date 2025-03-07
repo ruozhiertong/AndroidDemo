@@ -1,0 +1,17 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#3377FF" />
+            <corners android:radius="16dp" />
+            <stroke android:width="1dp" android:color="#20000000" />
+            <size android:width="180dp" android:height="50dp" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/ic_shield_check"
+        android:left="12dp"
+        android:top="9dp"
+        android:bottom="9dp"
+        android:width="32dp"
+        android:height="32dp"
+        android:tint="#3377FF" />
+</layer-list>

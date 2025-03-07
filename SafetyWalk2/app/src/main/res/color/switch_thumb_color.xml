@@ -2,4 +2,110 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="?attr/colorPrimary" android:state_checked="true"/>
     <item android:color="#BDBDBD" android:state_checked="false"/>
-</selector> 
+</selector>
+
+
+<!--    selector 资源：用于定义基于状态的颜色变化。-->
+<!--    android:state_checked：定义选中和未选中状态。-->
+<!--    使用方法：将 selector 保存为资源文件，并在布局或代码中引用。-->
+<!-- 资源文件使用时 和目录路径无关，和文件名有关。 目录只是为了更好的分类-->
+
+
+
+<!--    是的，selector 是一种 XML 资源，用于定义基于状态的颜色或 Drawable。它通常用于根据组件的状态（如选中、未选中、按下、禁用等）动态改变颜色或背景。-->
+<!--    在 Android 开发中，selector 可以用于多种场景，包括但不限于：-->
+<!--    设置按钮的颜色：根据按钮的按下状态改变背景颜色。-->
+<!--    设置开关的颜色：根据开关的选中状态改变滑块或轨道的颜色。-->
+<!--    设置文本的颜色：根据文本的选中状态改变文本颜色。-->
+<!--    设置背景 Drawable：根据组件的状态改变背景图片或形状。-->
+<!--    selector 的基本结构-->
+<!--    selector 的基本结构如下：-->
+<!--    xml复制-->
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--<item android:state_pressed="true" android:color="#FF0000" /> &lt;!&ndash; 按下状态 &ndash;&gt;-->
+<!--<item android:state_checked="true" android:color="#00FF00" /> &lt;!&ndash; 选中状态 &ndash;&gt;-->
+<!--<item android:state_enabled="false" android:color="#CCCCCC" /> &lt;!&ndash; 禁用状态 &ndash;&gt;-->
+<!--<item android:color="#0000FF" /> &lt;!&ndash; 默认状态 &ndash;&gt;-->
+<!--</selector>-->
+<!--    1. 设置颜色-->
+<!--    selector 可以用于定义颜色状态列表（ColorStateList），这在设置按钮、开关等组件的颜色时非常有用。-->
+<!--    示例：按钮的颜色状态-->
+<!--    xml复制-->
+<!--    &lt;!&ndash; res/color/button_color.xml &ndash;&gt;-->
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--<item android:state_pressed="true" android:color="#FF0000" /> &lt;!&ndash; 按下状态 &ndash;&gt;-->
+<!--<item android:color="#00FF00" /> &lt;!&ndash; 默认状态 &ndash;&gt;-->
+<!--</selector>-->
+<!--    在布局文件中使用：-->
+<!--    xml复制-->
+<!--<Button-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:text="Click Me"-->
+<!--android:backgroundTint="@color/button_color" />-->
+<!--    2. 设置 Drawable-->
+<!--    selector 也可以用于定义 Drawable 状态列表，这在设置背景图片或形状时非常有用。-->
+<!--    示例：按钮的背景 Drawable-->
+<!--    xml复制-->
+<!--    &lt;!&ndash; res/drawable/button_background.xml &ndash;&gt;-->
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--<item android:state_pressed="true">-->
+<!--    <shape>-->
+<!--        <solid android:color="#FF0000" />-->
+<!--        <corners android:radius="8dp" />-->
+<!--    </shape>-->
+<!--</item>-->
+<!--<item>-->
+<!--    <shape>-->
+<!--        <solid android:color="#00FF00" />-->
+<!--        <corners android:radius="8dp" />-->
+<!--    </shape>-->
+<!--</item>-->
+<!--</selector>-->
+<!--    在布局文件中使用：-->
+<!--    xml复制-->
+<!--<Button-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:text="Click Me"-->
+<!--android:background="@drawable/button_background" />-->
+<!--    3. 设置开关的颜色-->
+<!--    selector 常用于设置 Switch 或 SwitchMaterial 的滑块和轨道颜色。-->
+<!--    示例：开关的颜色状态-->
+<!--    xml复制-->
+<!--    &lt;!&ndash; res/color/switch_thumb_color.xml &ndash;&gt;-->
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--<item android:state_checked="true" android:color="?attr/colorPrimary" /> &lt;!&ndash; 选中状态 &ndash;&gt;-->
+<!--<item android:color="#BDBDBD" /> &lt;!&ndash; 未选中状态 &ndash;&gt;-->
+<!--</selector>-->
+<!--    在布局文件中使用：-->
+<!--    xml复制-->
+<!--<com.google.android.material.switchmaterial.SwitchMaterial-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:text="Enable Feature"-->
+<!--app:thumbTint="@color/switch_thumb_color" />-->
+<!--    4. 动态设置颜色-->
+<!--    你也可以在代码中动态创建 ColorStateList 并设置到组件上。-->
+<!--    示例：动态设置按钮颜色-->
+<!--    java复制-->
+<!--    int[][] states = new int[][] {-->
+<!--    new int[] {android.R.attr.state_pressed},  // 按下状态-->
+<!--    new int[] {}                              // 默认状态-->
+<!--    };-->
+
+<!--    int[] colors = new int[] {-->
+<!--    Color.RED,                                // 按下状态颜色-->
+<!--    Color.GREEN                               // 默认状态颜色-->
+<!--    };-->
+
+<!--    ColorStateList colorStateList = new ColorStateList(states, colors);-->
+
+<!--    Button button = findViewById(R.id.button);-->
+<!--    button.setBackgroundTintList(colorStateList);-->
+<!--    总结-->
+<!--    selector：用于定义基于状态的颜色或 Drawable。-->
+<!--    颜色状态列表：通过 android:color 定义颜色。-->
+<!--    Drawable 状态列表：通过嵌套的 shape 或其他 Drawable 定义背景。-->
+<!--    动态设置：可以在代码中创建 ColorStateList 并设置到组件上。-->
+<!--    通过合理使用 selector，你可以为按钮、开关等组件实现丰富的状态变化效果，增强应用的用户体验。-->
