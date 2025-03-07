@@ -40,7 +40,7 @@ public class ThemeSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Apply current theme before setting content view
-        ThemeManager.applyTheme(this);
+        ThemeManager.applyTheme(this); // 动态主题。 先setTheme， 再 onCreate，再setContentView。
         
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_theme_settings);

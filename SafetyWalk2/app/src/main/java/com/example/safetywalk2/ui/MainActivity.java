@@ -30,6 +30,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.widget.LinearLayout;
+import android.widget.Button;
 
 import com.example.safetywalk2.R;
 import com.example.safetywalk2.service.WalkDetectionService;
@@ -74,14 +75,16 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isChangingProgrammatically = false; // 添加一个标志，处理switch重复处理。
 
+    private Button helpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: ");
         ThemeManager.applyTheme(this);
-        processPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        processPermission();
 
         isServiceOn = isWalkDetectionServiceRunning();
         // 初始化系统服务
@@ -111,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
         soundSwitch = findViewById(R.id.sound_switch);
         vibrationSwitch = findViewById(R.id.vibration_switch);
         launchSwitch = findViewById(R.id.launch_switch);
+
+        // 初始化 helpButton
+        helpButton = findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadSettings() {
@@ -178,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout logSettings = findViewById(R.id.log_setting);
         logSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, LockActivity.class);
+            Intent intent = new Intent(MainActivity.this, LogActivity.class);
             startActivity(intent);
         });
 
@@ -431,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void processPermission() {
         //该应用需要的权限：
-        // 运动健康、后台弹出界面，显示悬浮窗，锁屏显示，自启动，通知，省电策略（不限制）。
+        // 运动健康、后台弹出界面，显示悬浮窗，锁屏显示，自启动，通知，省电策略（不限制），使用情况访问权限。
 
         //两大类：
         // 1.常规的动态申请。（系统提供标准API进行申请。）

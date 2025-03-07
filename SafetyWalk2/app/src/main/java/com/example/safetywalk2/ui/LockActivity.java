@@ -12,6 +12,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
@@ -57,8 +58,8 @@ public class LockActivity extends AppCompatActivity {
     private EditText answerInput;
     private TextView problemText;
     private TextView erroMsg;
-    private Handler autoCloseHandler;
-    private Runnable autoCloseRunnable;
+//    private Handler autoCloseHandler;
+//    private Runnable autoCloseRunnable;
 
     private SharedPreferences settings;
 
@@ -66,6 +67,10 @@ public class LockActivity extends AppCompatActivity {
 
     private static final String CHANNEL_ID = "motion_guard_channel";
     private static final int NOTIFICATION_ID = 1;
+
+    private TextView timerText;
+    private CountDownTimer countDownTimer;
+
 
     private void performServiceStartActions() {
         // 检查并执行震动
@@ -105,17 +110,25 @@ public class LockActivity extends AppCompatActivity {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_shield_check)
+                .setSmallIcon(R.drawable.ic_help)//MIUI中不起作用. 默认使用应用图标
                 .setContentTitle("MotionGuard")
                 .setContentText("已进入锁屏状态")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true)
+                .setOngoing(true)
                 // 添加声音
                 .setSound(soundUri)
                 // 添加震动
                 .setVibrate(vibrationPattern)
                 // 设置通知的重要性
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        //好像也不起作用。 都是使用应用图标
+        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi") ||
+                Build.MANUFACTURER.equalsIgnoreCase("Redmi")) {
+            builder.setSmallIcon(R.mipmap.ic_launcher2);  // 在小米设备上使用主图标
+        } else {
+            builder.setSmallIcon(R.drawable.ic_shield_check);  // 在其他设备上使用矢量图标
+        }
 
         notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
@@ -135,14 +148,16 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LogManager.d(TAG, "onCreate: Starting LockScreenActivity");
-        super.onCreate(savedInstanceState);
+
         ThemeManager.applyTheme(this);
+
+        super.onCreate(savedInstanceState);
 
         settings = getSharedPreferences(Config.SHAREFILE_NAME, MODE_PRIVATE);
 
-        vibrationFlag = settings.getBoolean(Config.VIBRATION, false);
-        soundFlag = settings.getBoolean(Config.SOUND, false);
-        notificationFlag = settings.getBoolean(Config.NOTIFICATION, false);
+        vibrationFlag = settings.getBoolean(Config.VIBRATION, true);
+        soundFlag = settings.getBoolean(Config.SOUND, true);
+        notificationFlag = settings.getBoolean(Config.NOTIFICATION, true);
 
         performServiceStartActions();
 
@@ -153,8 +168,12 @@ public class LockActivity extends AppCompatActivity {
         initViews();
         showMathProblem();
 
+
+        // 初始化倒计时
+        startCountdown(AUTO_CLOSE_DELAY);
+
         // 初始化自动关闭计时器
-        setupAutoCloseTimer();
+//        setupAutoCloseTimer();
 
         recordLock(true);
 
@@ -360,6 +379,7 @@ public class LockActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        timerText = findViewById(R.id.timer_text);
         problemText = findViewById(R.id.math_problem);
         answerInput = findViewById(R.id.answer_input);
         erroMsg = findViewById(R.id.error_message);
@@ -389,9 +409,7 @@ public class LockActivity extends AppCompatActivity {
 
 
     private void finishActivity() {
-
         recordLock(false);
-
         Intent serviceIntent = new Intent(this, WalkDetectionService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
@@ -401,30 +419,30 @@ public class LockActivity extends AppCompatActivity {
         finish();
     }
 
-    private void setupAutoCloseTimer() {
-        autoCloseHandler = new Handler(Looper.getMainLooper());
-        autoCloseRunnable = () -> {
-            LogManager.d(TAG, "Auto closing LockScreenActivity after 10 minutes, it completed!");
-            finishActivity();
-        };
-        // 启动计时器
-        startAutoCloseTimer();
-    }
+//    private void setupAutoCloseTimer() {
+//        autoCloseHandler = new Handler(Looper.getMainLooper());
+//        autoCloseRunnable = () -> {
+//            LogManager.d(TAG, "Auto closing LockScreenActivity after 10 minutes, it completed!");
+//            finishActivity();
+//        };
+//        // 启动计时器
+//        startAutoCloseTimer();
+//    }
 
-    private void startAutoCloseTimer() {
+//    private void startAutoCloseTimer() {
+//
+//        Log.d(TAG, "startAutoCloseTimer: ");
+//        // 移除之前的计时器（如果有）
+//        stopAutoCloseTimer();
+//        // 设置新的计时器
+//        autoCloseHandler.postDelayed(autoCloseRunnable, AUTO_CLOSE_DELAY);
+//    }
 
-        Log.d(TAG, "startAutoCloseTimer: ");
-        // 移除之前的计时器（如果有）
-        stopAutoCloseTimer();
-        // 设置新的计时器
-        autoCloseHandler.postDelayed(autoCloseRunnable, AUTO_CLOSE_DELAY);
-    }
-
-    private void stopAutoCloseTimer() {
-        if (autoCloseHandler != null && autoCloseRunnable != null) {
-            autoCloseHandler.removeCallbacks(autoCloseRunnable);
-        }
-    }
+//    private void stopAutoCloseTimer() {
+//        if (autoCloseHandler != null && autoCloseRunnable != null) {
+//            autoCloseHandler.removeCallbacks(autoCloseRunnable);
+//        }
+//    }
 
     @Override
     protected void onPause() {
@@ -437,14 +455,39 @@ public class LockActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // 确保清理计时器
-        stopAutoCloseTimer();
-        autoCloseHandler = null;
-        autoCloseRunnable = null;
+//        stopAutoCloseTimer();
+//        autoCloseHandler = null;
+//        autoCloseRunnable = null;
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
 
         if (notificationFlag) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(NOTIFICATION_ID); // 取消单个通知
             // notificationManager.cancelAll(); // 取消所有通知
         }
+    }
+
+
+    // 添加倒计时方法
+    private void startCountdown(long duration) {
+        countDownTimer = new CountDownTimer(duration, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // 更新倒计时显示
+                long seconds = millisUntilFinished / 1000;
+                timerText.setText(String.format("%02d:%02d", seconds / 60, seconds % 60));
+            }
+
+            @Override
+            public void onFinish() {
+                // 倒计时结束时的操作
+                timerText.setText("00:00");
+                // 这里可以添加自动解锁或其他操作
+                finishActivity();
+            }
+        }.start();
     }
 }

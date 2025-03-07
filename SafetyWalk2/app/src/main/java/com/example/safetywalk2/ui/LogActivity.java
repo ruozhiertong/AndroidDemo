@@ -44,7 +44,6 @@ public class LogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // 应用当前主题
         ThemeManager.applyTheme(this);
-        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
 

@@ -32,15 +32,15 @@
 <!--            app:tint="?attr/colorPrimary" />-->
     </FrameLayout>
 
-    <!-- Math Problem -->
+    <!-- Countdown Timer Text -->
     <TextView
-        android:id="@+id/math_problem"
+        android:id="@+id/timer_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="24 × 3 = ?"
+        android:layout_marginTop="16dp"
+        android:text="08:00"
         android:textColor="?attr/colorPrimary"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,12 +52,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="请解答以下数学题"
+        android:text="倒计时结束自动解锁或请解答以下数学题"
         android:textColor="?attr/colorPrimary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/math_problem" />
+        app:layout_constraintTop_toBottomOf="@id/timer_text" />
+
+    <!-- Math Problem -->
+    <TextView
+        android:id="@+id/math_problem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="24 × 3 = ?"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instruction_text" />
 
     <!-- Answer Input -->
     <EditText
@@ -76,7 +90,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/instruction_text" />
+        app:layout_constraintTop_toBottomOf="@id/math_problem" />
 
     <!-- Submit Button -->
     <Button

@@ -560,9 +560,9 @@ public class WalkDetectionService extends Service {
 
         // 创建前台服务通知
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "walk_detection")
-                .setContentTitle("走路检测")
-                .setContentText("服务正在运行")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("MotionGuard")
+                .setContentText("运动检测服务正在运行")
+                .setSmallIcon(R.drawable.ic_help) //MIUI中不起作用. 默认使用应用图标
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
