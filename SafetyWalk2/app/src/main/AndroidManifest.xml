@@ -39,6 +39,36 @@
         tools:targetApi="31" >
         <!--        android:theme="@style/Theme.SafetyWalk2"-->
 
+
+    <!-- SplashActivity 作为启动页 -->
+    <activity android:name=".ui.SplashActivity">
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
+    </activity>
+
+    <!-- AdActivity 用于展示广告 -->
+    <activity
+        android:name=".ui.AdActivity"/>
+    <!-- 首次安装的引导页       -->
+    <activity
+        android:name=".ui.IntroActivity"/>
+
+
+    <activity android:name=".ui.ProductDetailActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <!-- 支持 HTTP/HTTPS URL -->
+            <data android:scheme="https" android:host="www.example.com" android:pathPrefix="/product" />
+            <!-- 支持自定义 Scheme -->
+            <data android:scheme="myapp" android:host="product_detail" />
+        </intent-filter>
+    </activity>
+
     <activity
         android:name=".ui.MainActivity"
         android:exported="true"
@@ -54,7 +84,7 @@
         android:name=".ui.MainActivityAlias"
         android:enabled="true"
         android:exported="true"
-        android:targetActivity=".ui.MainActivity">
+        android:targetActivity=".ui.SplashActivity">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />

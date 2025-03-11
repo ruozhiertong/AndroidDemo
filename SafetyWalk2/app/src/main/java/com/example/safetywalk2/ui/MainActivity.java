@@ -59,6 +59,8 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    //通知。
+    // 据文档，当调用NotificationManager.notify(id, notification)时，系统会根据id来区分不同的通知。如果两次调用使用相同的id，无论渠道是否相同，后一次通知会覆盖前一次。渠道ID不同只会影响通知的分组和设置，但不会影响通知的唯一性。
     private static final String CHANNEL_ID = "motion_guard_channel";
     private static final int NOTIFICATION_ID = 1;
     
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private MediaPlayer mediaPlayer;
     private Vibrator vibrator;
-    private NotificationManager notificationManager;
 
     private boolean isChangingProgrammatically = false; // 添加一个标志，处理switch重复处理。
 
@@ -79,18 +80,27 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        SharedPreferences prefs = getSharedPreferences(Config.SHAREFILE_NAME, MODE_PRIVATE);
+        if (!prefs.getBoolean(Config.INTRO_SHOWN, false)) {
+            startActivity(new Intent(this, IntroActivity.class));
+            finish();
+            return;
+        }
+
+
         Log.d(TAG, "onCreate: ");
         ThemeManager.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 权限处理
         processPermission();
 
         isServiceOn = isWalkDetectionServiceRunning();
         // 初始化系统服务
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        createNotificationChannel();
 
         // 初始化音频播放器
 //        mediaPlayer = MediaPlayer.create(this, R.raw.service_start);
@@ -186,8 +196,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        //BUG: 直接跳转到LockActivity 可以显示通知。 而由Service 跳转到Activity无法显示通知。
+        //主要是因为service关闭后，关闭相同的notification id的通知。 所以，只要改id就好。
         LinearLayout logSettings = findViewById(R.id.log_setting);
         logSettings.setOnClickListener(v -> {
+//            Intent intent = new Intent(MainActivity.this, LockActivity.class);
             Intent intent = new Intent(MainActivity.this, LogActivity.class);
             startActivity(intent);
         });
@@ -275,6 +288,9 @@ public class MainActivity extends AppCompatActivity {
             statusText.setText("服务已关闭");
         }
 
+//        performServiceStartActions();
+
+
         // 如果需要动画效果
         if (animate) {
             // 添加缩放动画
@@ -304,14 +320,27 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
             }
         }
-
         // 检查并发送通知
         if (notificationSwitch.isChecked()) {
-            showServiceNotification();
+            if (isServiceOn) {
+                //重复创建相同 Channel ID 的通知渠道（Notification Channel）不会导致错误，但也不会产生新的通知渠道。系统会忽略重复的创建请求，因为通知渠道是通过 Channel ID 唯一标识的。
+                //1. 重复创建通知渠道的行为
+                //当你尝试创建一个已经存在的通知渠道时：
+                //如果通知渠道已经存在，系统会忽略重复的创建请求。
+                //如果通知渠道不存在，系统会创建一个新的通知渠道。
+                //这意味着你可以安全地调用 NotificationManager.createNotificationChannel()，而不用担心重复创建会引发问题。
+                createNotificationChannel();
+                showServiceNotification();
+            } else {
+                cancleNotification();
+            }
+
         }
     }
 
     private void showServiceNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         // 获取默认通知音效
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         
@@ -335,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNotificationChannel() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "MotionGuard Service";
             String description = "Notifications for MotionGuard service status";
@@ -345,6 +375,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void cancleNotification() {
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);  // 取消指定 ID 的通知
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -2,6 +2,7 @@ package com.example.safetywalk2.ui;
 
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -65,8 +66,9 @@ public class LockActivity extends AppCompatActivity {
 
     private boolean vibrationFlag, soundFlag, notificationFlag;
 
-    private static final String CHANNEL_ID = "motion_guard_channel";
-    private static final int NOTIFICATION_ID = 1;
+    //尽量和Serive的通知ID不一致，避免service关闭之后，lockactivity的通知也被关闭。
+//    private static final String CHANNEL_ID = "motion_guard_channel";
+//    private static final int NOTIFICATION_ID = 1;
 
     private TextView timerText;
     private CountDownTimer countDownTimer;
@@ -95,52 +97,67 @@ public class LockActivity extends AppCompatActivity {
 
         // 检查并发送通知
         if (notificationFlag) {
+//            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//
+//                Log.d(TAG, "performServiceStartActions: notificationFlag");
+//
+//                createNotificationChannel();
+//                showServiceNotification();
+//            }, 500);
             createNotificationChannel();
             showServiceNotification();
         }
     }
 
     private void showServiceNotification() {
+
         // 获取默认通知音效
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         // 设置震动模式
         long[] vibrationPattern = {0, 1000, 500, 1000}; // 延迟0ms，震动1000ms，暂停500ms，震动1000ms
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Config.LOCK_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_help)//MIUI中不起作用. 默认使用应用图标
                 .setContentTitle("MotionGuard")
                 .setContentText("已进入锁屏状态")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setOngoing(true)
+                .setAutoCancel(false)// 关键：不要让通知被自动清除
                 // 添加声音
                 .setSound(soundUri)
                 // 添加震动
                 .setVibrate(vibrationPattern)
                 // 设置通知的重要性
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-        //好像也不起作用。 都是使用应用图标
-        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi") ||
-                Build.MANUFACTURER.equalsIgnoreCase("Redmi")) {
-            builder.setSmallIcon(R.mipmap.ic_launcher2);  // 在小米设备上使用主图标
-        } else {
-            builder.setSmallIcon(R.drawable.ic_shield_check);  // 在其他设备上使用矢量图标
+//        //好像也不起作用。 都是使用应用图标
+//        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi") ||
+//                Build.MANUFACTURER.equalsIgnoreCase("Redmi")) {
+//            builder.setSmallIcon(R.mipmap.ic_launcher2);  // 在小米设备上使用主图标
+//        } else {
+//            builder.setSmallIcon(R.drawable.ic_shield_check);  // 在其他设备上使用矢量图标
+//        }
+
+        try {
+            notificationManager.notify(Config.LOCK_NOTIFICATION_ID, builder.build());
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to show notification", e);
         }
-
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
     private void createNotificationChannel() {
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //以应用为上下文
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "MotionGuard Service";
             String description = "Notifications for MotionGuard service status";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(Config.LOCK_CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             notificationManager.createNotificationChannel(channel);
         }
     }
@@ -159,9 +176,8 @@ public class LockActivity extends AppCompatActivity {
         soundFlag = settings.getBoolean(Config.SOUND, true);
         notificationFlag = settings.getBoolean(Config.NOTIFICATION, true);
 
-        performServiceStartActions();
-
         setContentView(R.layout.activity_lock);
+
 
         setupWindow();
 
@@ -171,6 +187,10 @@ public class LockActivity extends AppCompatActivity {
 
         // 初始化倒计时
         startCountdown(AUTO_CLOSE_DELAY);
+
+
+        performServiceStartActions();
+
 
         // 初始化自动关闭计时器
 //        setupAutoCloseTimer();
@@ -200,12 +220,8 @@ public class LockActivity extends AppCompatActivity {
     private void setupWindow() {
         Window window = getWindow();
 
-
-        // 确保在锁屏上显示
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-        }
+        // 设置基本窗口标志
+        window.setFlags(LOCK_FLAGS, LOCK_FLAGS);
 
         // MIUI 特定处理
         getWindow().addFlags(
@@ -216,14 +232,17 @@ public class LockActivity extends AppCompatActivity {
                         WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
         );
 
+//        // 确保在锁屏上显示
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+//            setShowWhenLocked(true);
+//            setTurnScreenOn(true);
+//        }
+
         // This is important - set this BEFORE setContentView
         // 显示 设置其透明，以及显示壁纸。
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
 
-
-        // 设置基本窗口标志
-        window.setFlags(LOCK_FLAGS, LOCK_FLAGS);
 
         // 禁止状态栏下拉
         window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -465,7 +484,7 @@ public class LockActivity extends AppCompatActivity {
 
         if (notificationFlag) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(NOTIFICATION_ID); // 取消单个通知
+            notificationManager.cancel(Config.LOCK_NOTIFICATION_ID); // 取消单个通知
             // notificationManager.cancelAll(); // 取消所有通知
         }
     }

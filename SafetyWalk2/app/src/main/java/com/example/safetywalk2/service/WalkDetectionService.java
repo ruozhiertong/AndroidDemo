@@ -382,6 +382,14 @@ public class WalkDetectionService extends Service {
         Log.d(TAG, "startLockScreenActivity: attempting to start lock screen");
         LogManager.d(TAG, "startLockScreenActivity...");
 
+        // 启动一个 Activity
+//        Intent activityIntent = new Intent(this, LockActivity.class);
+//        activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 必须设置此标志
+//        startActivity(activityIntent);
+        Intent activityIntent = new Intent(this, LockActivity.class);
+        activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(activityIntent);
+
         // 原来的备选启动方式代码
 //        if (!Settings.canDrawOverlays(this)) {
 //            Log.e(TAG, "No overlay permission");
@@ -389,45 +397,45 @@ public class WalkDetectionService extends Service {
 //        }
 
         // 创建启动 LockScreenActivity 的 Intent
-        Intent lockIntent = new Intent(getApplicationContext(), LockActivity.class);
-        lockIntent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK |          // 从服务启动 Activity 需要
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP |         // 清除顶部的 Activity
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP |       // 确保只有一个实例
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED  // 重置任务栈
-//                        Intent.FLAG_ACTIVITY_NO_HISTORY |        // 不加入历史栈
-//                        Intent.FLAG_ACTIVITY_CLEAR_TASK |        // 清除目标Activity所在任务栈的所有Activity
-//                        Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |   // 从最近任务中排除
-//                        Intent.FLAG_FROM_BACKGROUND |
-//                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-        );
-
-        // 使用 PendingIntent 来确保即使在后台也能启动
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                getApplicationContext(),  // 使用 ApplicationContext
-                0,
-                lockIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT |
-                        PendingIntent.FLAG_IMMUTABLE);
-
-        try {
-            // 尝试使用 PendingIntent 启动
-            //手动触发。 一般都是和Alarmanager等结合使用，由他们去调用其send方法，不用自己手动调用。
-            pendingIntent.send();
-        } catch (PendingIntent.CanceledException e) {
-            LogManager.e(TAG, "Failed to start LockScreenActivity with PendingIntent", e);
-            try {
-                // 如果 PendingIntent 失败，尝试直接启动
-                lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(lockIntent);
-            } catch (Exception e2) {
-                LogManager.e(TAG, "Failed to start LockScreenActivity directly", e2);
-                // 如果直接启动也失败，尝试使用广播
-//                Intent broadcastIntent = new Intent("com.example.walklock.START_LOCK_SCREEN");
-//                broadcastIntent.setPackage(getPackageName());
-//                sendBroadcast(broadcastIntent);
-            }
-        }
+//        Intent lockIntent = new Intent(getApplicationContext(), LockActivity.class);
+////        lockIntent.addFlags(
+////                Intent.FLAG_ACTIVITY_NEW_TASK |          // 从服务启动 Activity 需要
+////                        Intent.FLAG_ACTIVITY_CLEAR_TOP |         // 清除顶部的 Activity
+////                        Intent.FLAG_ACTIVITY_SINGLE_TOP |       // 确保只有一个实例
+////                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED  // 重置任务栈
+//////                        Intent.FLAG_ACTIVITY_NO_HISTORY |        // 不加入历史栈
+//////                        Intent.FLAG_ACTIVITY_CLEAR_TASK |        // 清除目标Activity所在任务栈的所有Activity
+//////                        Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |   // 从最近任务中排除
+//////                        Intent.FLAG_FROM_BACKGROUND |
+//////                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+////        );
+//
+//        // 使用 PendingIntent 来确保即使在后台也能启动
+//        PendingIntent pendingIntent = PendingIntent.getActivity(
+//                getApplicationContext(),  // 使用 ApplicationContext
+//                0,
+//                lockIntent,
+//                PendingIntent.FLAG_UPDATE_CURRENT |
+//                        PendingIntent.FLAG_IMMUTABLE);
+//
+//        try {
+//            // 尝试使用 PendingIntent 启动
+//            //手动触发。 一般都是和Alarmanager等结合使用，由他们去调用其send方法，不用自己手动调用。
+//            pendingIntent.send();
+//        } catch (PendingIntent.CanceledException e) {
+//            LogManager.e(TAG, "Failed to start LockScreenActivity with PendingIntent", e);
+//            try {
+//                // 如果 PendingIntent 失败，尝试直接启动
+//                lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(lockIntent);
+//            } catch (Exception e2) {
+//                LogManager.e(TAG, "Failed to start LockScreenActivity directly", e2);
+//                // 如果直接启动也失败，尝试使用广播
+////                Intent broadcastIntent = new Intent("com.example.walklock.START_LOCK_SCREEN");
+////                broadcastIntent.setPackage(getPackageName());
+////                sendBroadcast(broadcastIntent);
+//            }
+//        }
 
         // 延迟停止服务，确保有足够时间启动 Activity
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -540,7 +548,7 @@ public class WalkDetectionService extends Service {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    "walk_detection",
+                    Config.SERVICE_CHANNEL_ID,
                     "Walk Detection Service",
                     NotificationManager.IMPORTANCE_HIGH); // 提高通知重要性
             channel.setDescription("用于检测走路状态的服务");
@@ -559,7 +567,7 @@ public class WalkDetectionService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // 创建前台服务通知
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "walk_detection")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Config.SERVICE_CHANNEL_ID)
                 .setContentTitle("MotionGuard")
                 .setContentText("运动检测服务正在运行")
                 .setSmallIcon(R.drawable.ic_help) //MIUI中不起作用. 默认使用应用图标
@@ -574,9 +582,9 @@ public class WalkDetectionService extends Service {
 
         // 启动前台服务
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            startForeground(Config.SERVICE_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
         } else {
-            startForeground(1, notification);
+            startForeground(Config.SERVICE_NOTIFICATION_ID, notification);
         }
     }
 
