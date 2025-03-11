@@ -1,6 +1,8 @@
 package com.example.safetywalk2.ui;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.safetywalk2.R;
@@ -8,12 +10,18 @@ import com.example.safetywalk2.util.ThemeManager;
 
 public class HelpActivity extends AppCompatActivity {
 
+    private ImageButton backButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ThemeManager.applyTheme(this); // 应用当前主题
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
+        backButton = findViewById(R.id.back_button);
+
+        backButton.setOnClickListener(v -> finish());
+        
         // 初始化视图
         TextView helpText = findViewById(R.id.help_text);
         helpText.setText(getHelpContent());
