@@ -80,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate: ");
+        ThemeManager.applyTheme(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
 
 
         SharedPreferences prefs = getSharedPreferences(Config.SHAREFILE_NAME, MODE_PRIVATE);
@@ -89,11 +94,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-
-        Log.d(TAG, "onCreate: ");
-        ThemeManager.applyTheme(this);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         // 权限处理
         processPermission();

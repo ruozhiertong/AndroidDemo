@@ -103,7 +103,6 @@
         android:paddingVertical="12dp"
         android:paddingStart="16dp"
         android:text="查看日志记录"
-        android:textAlignment="textStart"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -315,12 +315,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:drawableStart="@drawable/ic_help"
+        app:icon="@drawable/ic_help"
+        app:iconGravity="textStart"
         android:drawablePadding="8dp"
         android:paddingVertical="12dp"
         android:paddingStart="16dp"
         android:text="使用指南"
-        android:textAlignment="textStart"
         app:layout_constraintBottom_toBottomOf="parent" />
     <!--        android:background="@drawable/button_background_light"。 android:backgroundTint 是一个用于设置背景颜色的属性，它会覆盖 android:background 中定义的颜色，但不会改变背景的形状或图片。-->
 
