@@ -178,7 +178,6 @@ public class LockActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_lock);
 
-
         setupWindow();
 
         initViews();
@@ -224,7 +223,7 @@ public class LockActivity extends AppCompatActivity {
         window.setFlags(LOCK_FLAGS, LOCK_FLAGS);
 
         // MIUI 特定处理
-        getWindow().addFlags(
+        window.addFlags(
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
@@ -238,14 +237,19 @@ public class LockActivity extends AppCompatActivity {
 //            setTurnScreenOn(true);
 //        }
 
+
         // This is important - set this BEFORE setContentView
         // 显示 设置其透明，以及显示壁纸。
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
 
-
         // 禁止状态栏下拉
-        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+
+        // 确保输入法可以正常显示
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
 
         // 设置窗口类型
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -316,30 +320,28 @@ public class LockActivity extends AppCompatActivity {
     }
 
     private void hideSystemUI() {
+        Window window = getWindow();
         View decorView = getWindow().getDecorView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowInsetsController controller = decorView.getWindowInsetsController();
             if (controller != null) {
-                // 隐藏所有系统栏
-                controller.hide(
-                        WindowInsets.Type.statusBars() |
-                                WindowInsets.Type.navigationBars() |
-                                WindowInsets.Type.systemBars()
-                );
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
+                // 只隐藏状态栏和导航栏，不隐藏输入法
+                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                // 设置状态栏和导航栏透明
+                window.setDecorFitsSystemWindows(false);
+                controller.setSystemBarsAppearance(
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
             }
         } else {
-            // 对于 Android R 以下版本使用旧的 API
+            // 对于 Android R 以下版本
             int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_FULLSCREEN |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE;
-
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             decorView.setSystemUiVisibility(flags);
         }
     }

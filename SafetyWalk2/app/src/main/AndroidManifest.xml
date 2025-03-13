@@ -113,7 +113,9 @@
 
     <activity
         android:name=".ui.LockActivity"
-        android:exported="false"/>
+        android:exported="false"
+        android:windowSoftInputMode="adjustResize"
+        android:fitsSystemWindows="true" />
 
 
 
