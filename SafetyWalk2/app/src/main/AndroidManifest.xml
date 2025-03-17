@@ -114,8 +114,12 @@
     <activity
         android:name=".ui.LockActivity"
         android:exported="false"
-        android:windowSoftInputMode="adjustResize"
-        android:fitsSystemWindows="true" />
+        android:resizeableActivity="false"
+        android:excludeFromRecents="true"
+        android:showOnLockScreen="true"
+        android:launchMode="singleInstance"
+        android:screenOrientation="portrait"/>
+<!--                android:resizeableActivity="false"  禁用多窗口模式（分屏或自由窗口模式） -->
 
 
 
@@ -177,7 +181,7 @@
 
 
 
-    <!--        用于分享文件。分享到其他app -->
+    <!--   注册Provider。  用于分享文件。分享到其他app -->
     <provider
         android:name="androidx.core.content.FileProvider"
         android:authorities="${applicationId}.fileprovider"

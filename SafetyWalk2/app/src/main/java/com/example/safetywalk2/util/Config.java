@@ -1,5 +1,9 @@
 package com.example.safetywalk2.util;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Config {
 
 
@@ -28,6 +32,15 @@ public class Config {
     public static final int SERVICE_NOTIFICATION_ID = 1;
     public static final int LOCK_NOTIFICATION_ID = 2;
 
+
+    public static final Set<String> WHITE_LIST_PACKAGES = new HashSet<>(Arrays.asList(
+            "com.autonavi.minimap",        // 高德地图
+            "com.baidu.BaiduMap",          // 百度地图
+            "com.tencent.map",             // 腾讯地图
+            "com.google.android.apps.maps", // Google Maps
+            "com.android.browser"
+            // 添加其他白名单应用
+    ));
 
 
 

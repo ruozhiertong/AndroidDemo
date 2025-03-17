@@ -2,6 +2,8 @@ package com.example.safetywalk2.util;
 
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -9,6 +11,10 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import com.example.safetywalk2.ui.HiddenActivity;
+
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class SystemUtil {
 
@@ -89,5 +95,28 @@ public class SystemUtil {
                 state,
                 PackageManager.DONT_KILL_APP
         );
+    }
+
+
+    public static String getTopPackageName(Context context) {
+        UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        long currentTime = System.currentTimeMillis();
+        // 获取最近1秒的应用使用情况
+        List<UsageStats> stats = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                currentTime - 1000,
+                currentTime
+        );
+
+        if (stats != null && !stats.isEmpty()) {
+            SortedMap<Long, UsageStats> sortedMap = new TreeMap<>();
+            for (UsageStats usageStats : stats) {
+                sortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+            }
+            if (!sortedMap.isEmpty()) {
+                return sortedMap.get(sortedMap.lastKey()).getPackageName();
+            }
+        }
+        return null;
     }
 }

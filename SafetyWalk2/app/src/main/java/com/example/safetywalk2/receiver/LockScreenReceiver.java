@@ -1,12 +1,17 @@
 package com.example.safetywalk2.receiver;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
 import com.example.safetywalk2.service.WalkDetectionService;
+import com.example.safetywalk2.util.Config;
+import com.example.safetywalk2.util.LogManager;
 
 /**
  * 系统锁屏和解锁的广播接收器。
@@ -41,8 +46,13 @@ public class LockScreenReceiver extends BroadcastReceiver {
     private static final String TAG = "LockScreenReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
+        LogManager.d(TAG, "onReceive: " + intent);
 
-        Log.d(TAG, "onReceive: " + intent);
+        SharedPreferences preferences = context.getSharedPreferences(Config.SHAREFILE_NAME, MODE_PRIVATE);
+        boolean isLocked = preferences.getBoolean(Config.LOCK_STATUS, false);
+        if (isLocked)
+            return;
+
 
         //有一定几率的bug。 当Service销毁时，刚好又接收到广播，广播接收器中又StartService，导致bug。
         // 获取服务实例，检查是否正在销毁

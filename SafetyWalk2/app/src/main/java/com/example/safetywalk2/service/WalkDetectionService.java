@@ -34,6 +34,7 @@ import com.example.safetywalk2.receiver.LockScreenReceiver;
 import com.example.safetywalk2.ui.LockActivity;
 import com.example.safetywalk2.util.Config;
 import com.example.safetywalk2.util.LogManager;
+import com.example.safetywalk2.util.SystemUtil;
 import com.example.safetywalk2.util.WalkDetectorUtil;
 
 import java.text.SimpleDateFormat;
@@ -107,6 +108,7 @@ public class WalkDetectionService extends Service {
     public static final String ACTION_STOP_SERVICE = "com.example.walklock.STOP_SERVICE";
     public static final String ACTION_STOP_SENSOR = "com.example.walklock.STOP_SENSOR";
     public static final String ACTION_START_SENSOR = "com.example.walklock.START_SENSOR";
+    public static final String ACTION_START_SERVICE = "com.example.walklock.START_SERVICE";
 
 
 
@@ -134,8 +136,6 @@ public class WalkDetectionService extends Service {
     private final IBinder binder = new LocalBinder();
     private int changeCount = 0;
 
-    private boolean isLocked;
-
 
     private volatile boolean isDestroying = false; // 添加标志位表示服务正在销毁
 
@@ -144,14 +144,7 @@ public class WalkDetectionService extends Service {
 
     private SharedPreferences preferences;
 
-
-    // 添加白名单应用包名
-    private static final Set<String> WHITE_LIST_PACKAGES = new HashSet<>(Arrays.asList(
-            "com.autonavi.minimap",        // 高德地图
-            "com.baidu.BaiduMap",          // 百度地图
-            "com.tencent.map",             // 腾讯地图
-            "com.google.android.apps.maps"  // Google Maps
-    ));
+    private boolean isLocked = false;
 
 
     public class LocalBinder extends Binder {
@@ -173,13 +166,14 @@ public class WalkDetectionService extends Service {
         walkDetector = new WalkDetectorUtil();
         // 初始化 SharedPreferences
         preferences = getSharedPreferences(Config.SHAREFILE_NAME, MODE_PRIVATE);
+
     }
 
     public void cleanup () {
-
+        isDestroying = true;
+        instance = null;
 
         // 清理资源
-
         if (lockScreenReceiver != null) {
             try {
                 unregisterReceiver(lockScreenReceiver);
@@ -200,6 +194,12 @@ public class WalkDetectionService extends Service {
 
     private void startDetector(){
         LogManager.d(TAG, "startDetector: ");
+        isLocked = preferences.getBoolean(Config.LOCK_STATUS, false);
+        if (isLocked) {
+            startLockScreenActivity();
+        }
+
+
         if (walkDetector != null && walkDetector.isRegistered)
             return;
         LogManager.d(TAG, "register new walkDetector");
@@ -327,7 +327,7 @@ public class WalkDetectionService extends Service {
         }
 
         Log.d(TAG, "Current foreground app: " + foregroundApp);
-        return WHITE_LIST_PACKAGES.contains(foregroundApp);
+        return Config.WHITE_LIST_PACKAGES.contains(foregroundApp);
     }
 
     private void checkStatus(){
@@ -381,6 +381,10 @@ public class WalkDetectionService extends Service {
     private void startLockScreenActivity() {
         Log.d(TAG, "startLockScreenActivity: attempting to start lock screen");
         LogManager.d(TAG, "startLockScreenActivity...");
+        isLocked = true;
+
+        //暂停检测
+        walkDetector.stopStepCount();
 
         // 启动一个 Activity
 //        Intent activityIntent = new Intent(this, LockActivity.class);
@@ -437,11 +441,14 @@ public class WalkDetectionService extends Service {
 //            }
 //        }
 
-        // 延迟停止服务，确保有足够时间启动 Activity
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            isNormalStop = true;
-            stopSelf();
-        }, 1000);
+        //不关闭service，因为LockActivity也有可能非正常关闭。非正常关闭情况下，service就没办法启动。
+        //因此这里应该只做暂停检测。
+//        // 延迟停止服务，确保有足够时间启动 Activity
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//            isNormalStop = true;
+//            stopSelf();
+//        }, 1000);
+
     }
 
     @SuppressLint("ForegroundServiceType")
@@ -455,18 +462,7 @@ public class WalkDetectionService extends Service {
             return START_NOT_STICKY;
         }
 
-        //变成前台服务。
-        createNotificationChannel();
-        startForegroundWithNotification();
-
-
-        if (intent != null && ACTION_STOP_SERVICE.equals(intent.getAction())) {
-            isNormalStop = true;
-            stopSelf();
-            return START_NOT_STICKY;
-        }
-
-        if (intent != null && ACTION_STOP_SENSOR.equals(intent.getAction())) {
+        if (intent != null && ACTION_STOP_SENSOR.equals(intent.getAction()) && !isLocked) {
             LogManager.d(TAG, "ACTION_STOP_SENSOR " + "isMoving " +  isMoving);
 //            if (isMoving)
 //                niceTry++;
@@ -500,24 +496,41 @@ public class WalkDetectionService extends Service {
             return START_STICKY;
         }
 
-        if (intent != null && ACTION_START_SENSOR.equals(intent.getAction())) {
+        if (intent != null && ACTION_START_SENSOR.equals(intent.getAction()) && !isLocked) {
             LogManager.d(TAG, "ACTION_START_SENSOR");
             startDetector();
 //            preUnlockTime = System.currentTimeMillis();
             return START_STICKY;
         }
 
-
-        //正常command。
-        SharedPreferences settings = getSharedPreferences("app_settings", 0);
-        isLocked = settings.getBoolean("is_lock", false);
-        if (isLocked) {
-            startLockScreenActivity();
+        if (intent != null && ACTION_STOP_SERVICE.equals(intent.getAction())) {
+            isNormalStop = true;
+            stopSelf();
             return START_NOT_STICKY;
-        } else {
+        }
+
+        //启动服务的action
+        if (intent != null && ACTION_START_SERVICE.equals(intent.getAction())) {
+            //正常command。
+            //变成前台服务。
+            createNotificationChannel();
+            startForegroundWithNotification();
             startDetector();
             return START_STICKY;
         }
+
+
+        return START_STICKY;
+
+//        SharedPreferences settings = getSharedPreferences("app_settings", 0);
+//        isLocked = settings.getBoolean("is_lock", false);
+//        if (isLocked) {
+//            startLockScreenActivity();
+//            return START_NOT_STICKY;
+//        } else {
+//            startDetector();
+//            return START_STICKY;
+//        }
 
 //        START_STICKY 只在系统因内存不足等原因杀死 Service 时才起作用。
 //        设置了`START_STICKY`的Service会在以下情况下被系统重启：
@@ -631,7 +644,8 @@ public class WalkDetectionService extends Service {
         if (!isNormalStop) {
             LogManager.d(TAG, "onTaskRemoved: restarting...");
             Intent restartServiceIntent = new Intent(getApplicationContext(), WalkDetectionService.class);
-            restartServiceIntent.setAction("just_test_no_sense");
+//            restartServiceIntent.setAction("just_test_no_sense");
+            restartServiceIntent.setAction(ACTION_START_SERVICE);
             restartServiceIntent.setPackage(getPackageName());
             PendingIntent restartServicePendingIntent = PendingIntent.getService(
                     getApplicationContext(), 1, restartServiceIntent,
@@ -653,10 +667,6 @@ public class WalkDetectionService extends Service {
         LogManager.d(TAG, "onDestroy: " + this);
         LogManager.d(TAG, "onDestroy: Process ID: " + android.os.Process.myPid());
         super.onDestroy();
-
-        isDestroying = true;
-        instance = null;
-
         cleanup();
 
     }

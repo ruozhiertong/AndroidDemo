@@ -408,6 +408,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 启动服务
         Intent serviceIntent = new Intent(this, WalkDetectionService.class);
+        serviceIntent.setAction(WalkDetectionService.ACTION_START_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         } else {
